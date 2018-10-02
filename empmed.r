@@ -42,7 +42,8 @@ clem <- function(m1) {
   return(table(c1,l1))
 } # end function clem
 
-# computations:
+# computations as long as possible due
+# tostorage requirements:
 cl2 <- clem(m1=2)
 cl3 <- clem(m1=3)
 cl4 <- clem(m1=4)
@@ -61,9 +62,6 @@ cl13 <- clem(m1=13)
 Sys.time() # a little more than 8 minutes
 Sys.time()
 cl14 <- clem(m1=14)
-Sys.time()
-Sys.time()
-cl15 <- clem(m1=15)
 Sys.time()
 # higher m requires too much storage
 
