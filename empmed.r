@@ -1,4 +1,4 @@
-vlibrary(Rmpfr)
+library(Rmpfr)
 
 # finction for generating all subsets of size m1 within n1 objects:
 gensubset <- function(n1, m1) {  
