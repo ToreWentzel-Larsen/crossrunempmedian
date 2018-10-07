@@ -1,9 +1,9 @@
 library(Rmpfr)
 
 # finction for generating all subsets of size m1 within n1 objects:
-gensubset <- function(n1, m1) {  
+gensubset <- function(n1, m1) {
   chooseall <- choose(n1,m1)
-  if (m1==n1) res <- matrix(1, ncol=1, nrow=m1) else 
+  if (m1==n1) res <- matrix(1, ncol=1, nrow=m1) else
     if (m1==1) res <- diag(rep(1,n1)) else {
       res <- matrix(0,ncol=n1, nrow=choose(n1,m1))
       chooses <- choose(c((n1-1):(m1-1)),m1-1)
@@ -11,13 +11,13 @@ gensubset <- function(n1, m1) {
       nch <- length(chooses)
       starts <- c(1,1+ends[-nch])
       for (part in 1:nch) {
-        startp <- starts[part] 
-        endp <- ends[part] 
+        startp <- starts[part]
+        endp <- ends[part]
         res[startp:endp,part] <- 1
         res[startp:endp,(part+1):n1] <- gensubset(n1-part,m1-1)
       } # end parts
     } # end if not simple case
-  return(res)
+    return(res)
 } # end function gensubset
 
 gensubset(3,3)
@@ -35,7 +35,7 @@ lf <- function(subs) max(rle(subs)$lengths)
 clem <- function(m1) {
   n1 <- 2*m1
   # only included subsets including the first element:
-  chooseall <- choose(n1-1,m1-1) 
+  chooseall <- choose(n1-1,m1-1)
   subsm <- matrix(0, ncol=n1, nrow=chooseall)
   subsm[,1] <- 1
   subsm[,-1] <- gensubset(n1-1,m1-1)
@@ -67,14 +67,14 @@ cl14 <- clem(m1=14)
 Sys.time()
 # higher m requires too much storage
 
-# specific checks in small cases (for comparison 
+# specific checks in small cases (for comparison
 # with resutls of brute force calculations):
 check4 <- cbind(rep(1,35),gensubset(7,3))
 data.frame(c=apply(check4,1,cf),
            l=apply(check4,1,lf))
 check5 <- cbind(rep(1,126),gensubset(9,4))
 check5 <- data.frame(check5,c=apply(check5,1,cf),
-           l=apply(check5,1,lf))
+                     l=apply(check5,1,lf))
 check5[1:80,]
 check5[81:126,]
 data.frame(c=apply(check5,1,cf),
@@ -96,7 +96,7 @@ cl11
 cl12
 cl13
 cl14
-cl15
+
 
 # check with simulations:
 simclem <- function(m1=14, nsim = 1e+05) {
@@ -135,10 +135,10 @@ mean(simcl14$cs)
 sum(apply(cl14,2,sum)*c(1:14))/sum(cl14)
 mean(simcl14$ls)
 # check standard deviations of C and L:
-sqrt(sum(apply(cl14,1,sum)*c(1:27)^2)/sum(cl14) - 
+sqrt(sum(apply(cl14,1,sum)*c(1:27)^2)/sum(cl14) -
        (sum(apply(cl14,1,sum)*c(1:27))/sum(cl14))^2)
 sd(simcl14$cs)
-sqrt(sum(apply(cl14,2,sum)*c(1:14)^2)/sum(cl14) - 
+sqrt(sum(apply(cl14,2,sum)*c(1:14)^2)/sum(cl14) -
        (sum(apply(cl14,2,sum)*c(1:14))/sum(cl14))^2)
 sd(simcl14$ls)
 # check means of C*L:
@@ -147,18 +147,18 @@ mean(simcl14$cs*simcl14$ls)
 # check theoretical and empirical cdf:
 plot(x=as.numeric(names(table(simcl14$cs))),
      y=(cumsum(cumsummrow(cl14)[,14])/(sum(cl14)))[
-       as.numeric(names(table(simcl14$cs)))], 
+       as.numeric(names(table(simcl14$cs)))],
      type="l", xlab="Number of crossings", ylab="CDF", las=1)
-points(x=as.numeric(names(table(simcl14$cs))), 
+points(x=as.numeric(names(table(simcl14$cs))),
        y=cumsum(table(simcl14$cs))/sum(table(simcl14$cs)),
        type="l", col="red",lty="dotted")
 lines(x=c(4,7), y=c(.9,.9), col="red")
 text(x=7, y=.9, pos=4, labels="red: simulations", col="red")
 plot(x=as.numeric(names(table(simcl14$ls))),
      y=(cumsum(cumsummcol(cl14)[27,])/(sum(cl14)))[
-       as.numeric(names(table(simcl14$ls)))], 
+       as.numeric(names(table(simcl14$ls)))],
      type="l", xlab="Longest run", ylab="CDF", las=1)
-points(x=as.numeric(names(table(simcl14$ls))), 
+points(x=as.numeric(names(table(simcl14$ls))),
        y=cumsum(table(simcl14$ls))/sum(table(simcl14$ls)),
        type="l", col="red",lty="dotted")
 lines(x=c(4,6), y=c(.4,.4), col="red")
@@ -169,15 +169,56 @@ text(x=6, y=.4, pos=4, labels="red: simulations", col="red")
 
 # function for computing the number of subsets of each size m
 # from n subsequent observations, for each value of the number of
-# crossings and the longest run. subsets are also classified by
+# crossings and the longest run. subsets are classified by
 # whether they contain the first observation and the computations
-# partition on the length of the initial run.
+# are partition on the length of the initial run.
 crossrunem <- function(nmax = 100, prec = 120,
-                        printn = FALSE) {
+                       printn = FALSE) {
   nill <- Rmpfr::mpfr(0, prec)
   one <- Rmpfr::mpfr(1, prec)
-  # conditioning of S= first value, pat: above 0, pbt: below 0 suffix
-  # t: probabilities times multm^(n-1).  n=1:
+  # conditioning of S= first value included in the subset (S=1)
+  # or not (S=0).
+  # nfi: number of subsets, first value included,
+  # nfn: number of subsets, first value not included.
+  # separate code by brute force for low n:
+  nfi <- list(Rmpfr::mpfrArray(0, prec, dim = c(1, 1, 2)))
+  nfn <- list(Rmpfr::mpfrArray(0, prec, dim = c(1, 1, 2)))
+  dimnames(nfi[[1]]) <- list("c=0","l=1",c("m=0","m=1"))
+  dimnames(nfn[[1]]) <- list("c=0","l=1",c("m=0","m=1"))
+  nfn[[1]][1,1,1] <- 1 # m=0
+  nfi[[1]][1,1,2] <- 1 # m=1
+  nfi[[2]] <- Rmpfr::mpfrArray(0, prec, dim = c(2, 2, 3))
+  nfn[[2]] <- Rmpfr::mpfrArray(0, prec, dim = c(2, 2, 3))
+  dimnames(nfi[[2]]) <- list(paste0("c=",0:1),paste0("l=",1:2),
+                             paste0("m=",0:2))
+  dimnames(nfn[[2]]) <- list(paste0("c=",0:1),paste0("l=",1:2),
+                             paste0("m=",0:2))
+  nfn[[2]][1,2,1] <- 1 # m=0
+  nfi[[2]][2,1,2] <- 1 # m=1
+  nfn[[2]][1,2,2] <- 1
+  nfi[[2]][1,2,3] <- 1 # m=2
+  nfi[[3]] <- Rmpfr::mpfrArray(0, prec, dim = c(3, 3, 4))
+  nfn[[3]] <- Rmpfr::mpfrArray(0, prec, dim = c(3, 3, 4))
+  dimnames(nfi[[3]]) <- list(paste0("c=",0:2),paste0("l=",1:3),
+                             paste0("m=",0:3))
+  dimnames(nfn[[3]]) <- list(paste0("c=",0:2),paste0("l=",1:3),
+                             paste0("m=",0:3))
+  nfn[[3]][1,3,1] <- 1 # m=0
+  nfi[[3]][2,2,2] <- 1 # m=1
+  nfn[[3]][2,2,2] <- 1
+  nfn[[3]][3,1,2] <- 1
+  nfi[[3]][2,1,3] <- 1 # m=2
+  nfi[[3]][3,1,3] <- 1
+  nfn[[3]][2,2,3] <- 1
+  nfi[[3]][1,3,4] <- 1 # m=3
+  return(list(nfi = nfi, nfn = nfn))
+} # end function crossrunem
+
+tull <- crossrunem(nmax=1)
+tull
+
+# code from crossrunbin, to look at:
+
   nat <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
   pbt <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
   pt <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
