@@ -114,7 +114,7 @@ simclem <- function(m1=14, nsim = 1e+05) {
   return(data.frame(cs=cs,ls=ls))
 } #end function simclem
 # auxiliary funtions:
-cumsummrow <- function(mtrx) {
+cumsumm <- function(mtrx) {
   mtrs <- mtrx
   nrw <- nrow(mtrx)
   for (rw in 1:nrw) mtrs[rw, ] <- cumsum(mtrx[rw, ])
@@ -146,7 +146,7 @@ sum(diag(1:27) %*% cl14 %*% diag(1:14))/sum(cl14)
 mean(simcl14$cs*simcl14$ls)
 # check theoretical and empirical cdf:
 plot(x=as.numeric(names(table(simcl14$cs))),
-     y=(cumsum(cumsummrow(cl14)[,14])/(sum(cl14)))[
+     y=(cumsum(cumsumm(cl14)[,14])/(sum(cl14)))[
        as.numeric(names(table(simcl14$cs)))],
      type="l", xlab="Number of crossings", ylab="CDF", las=1)
 points(x=as.numeric(names(table(simcl14$cs))),
@@ -180,7 +180,7 @@ crossrunem <- function(nmax = 100, prec = 120,
   # or not (S=0).
   # nfi: number of subsets, first value included,
   # nfn: number of subsets, first value not included.
-  # separate code by brute force for low n:
+  # separate code by brute force for low n (n=1,2,3,4):
   nfi <- list(Rmpfr::mpfrArray(0, prec, dim = c(1, 1, 2)))
   nfn <- list(Rmpfr::mpfrArray(0, prec, dim = c(1, 1, 2)))
   dimnames(nfi[[1]]) <- list("c=0","l=1",c("m=0","m=1"))
@@ -195,7 +195,7 @@ crossrunem <- function(nmax = 100, prec = 120,
                              paste0("m=",0:2))
   nfn[[2]][1,2,1] <- 1 # m=0
   nfi[[2]][2,1,2] <- 1 # m=1
-  nfn[[2]][1,2,2] <- 1
+  nfn[[2]][2,1,2] <- 1
   nfi[[2]][1,2,3] <- 1 # m=2
   nfi[[3]] <- Rmpfr::mpfrArray(0, prec, dim = c(3, 3, 4))
   nfn[[3]] <- Rmpfr::mpfrArray(0, prec, dim = c(3, 3, 4))
@@ -207,89 +207,147 @@ crossrunem <- function(nmax = 100, prec = 120,
   nfi[[3]][2,2,2] <- 1 # m=1
   nfn[[3]][2,2,2] <- 1
   nfn[[3]][3,1,2] <- 1
-  nfi[[3]][2,1,3] <- 1 # m=2
+  nfi[[3]][2,2,3] <- 1 # m=2
   nfi[[3]][3,1,3] <- 1
   nfn[[3]][2,2,3] <- 1
   nfi[[3]][1,3,4] <- 1 # m=3
+  nfi[[4]] <- Rmpfr::mpfrArray(0, prec, dim = c(4, 4, 5))
+  nfn[[4]] <- Rmpfr::mpfrArray(0, prec, dim = c(4, 4, 5))
+  dimnames(nfi[[4]]) <- list(paste0("c=",0:3),paste0("l=",1:4),
+                             paste0("m=",0:4))
+  dimnames(nfn[[4]]) <- list(paste0("c=",0:3),paste0("l=",1:4),
+                             paste0("m=",0:4))
+  nfn[[4]][1,4,1] <- 1 # m=0
+  nfi[[4]][2,3,2] <- 1 # m=1
+  nfn[[4]][2,3,2] <- 1
+  nfn[[4]][3,2,2] <- 2
+  nfi[[4]][2:3,2,3] <- 1 # m=2
+  nfi[[4]][4,1,3] <- 1
+  nfn[[4]][2:3,2,3] <- 1
+  nfn[[4]][4,1,3] <- 1
+  nfi[[4]][2,3,4] <- 1 # m=3
+  nfi[[4]][3,2,4] <- 2
+  nfn[[4]][2,3,4] <- 1 
+  nfi[[4]][1,4,5] <- 1 # m=4
+  # iterative procedure for higher n (>=5):
+  for (nn in 5:nmax) {
+    nfi[[nn]] <- Rmpfr::mpfrArray(0, prec, dim = c(nn, nn, nn+1))
+    nfn[[nn]] <- Rmpfr::mpfrArray(0, prec, dim = c(nn, nn, nn+1))
+    dimnames(nfi[[nn]]) <- list(paste0("c=",0:(nn-1)),paste0("l=",1:nn),
+                                paste0("m=",0:nn))
+    dimnames(nfn[[nn]]) <- list(paste0("c=",0:(nn-1)),paste0("l=",1:nn),
+                                paste0("m=",0:nn))
+    # separate computation for m=0,n:
+    nfn[[nn]][1,nn,1] <- 1 # m=0
+    nfn[[nn]][1,nn,nn+1] <- 1 # m=n
+    # iterative procedure nfi, for 1 <= m <= n-1:
+    for (mm in 1:(nn-1)) for (gg in 1:mm) {
+      if (gg>=nn-gg) nfi[[nn]][2:(nn-gg+1),gg,mm+1] <- 
+          nfi[[nn]][2:(nn-gg+1),gg,mm+1] + 
+          cumsumm(nfn[[nn-gg]][1:(nn-gg),1:gg,mm-gg+1])
+      if (gg<nn-gg) {
+        nfi[[nn]][2:(nn-gg+1),gg,mm+1] <- 
+          nfi[[nn]][2:(nn-gg+1),gg,mm+1] + 
+          nfn[[nn-gg]][1:(nn-gg),,mm-gg+1]
+        nfi[[nn]][2:(nn-gg+1),(gg+1):(nn-gg),mm+1] <- 
+          nfi[[nn]][2:(nn-gg+1),(gg+1):(nn-gg),mm+1] + 
+          nfn[[nn-gg]][1:(nn-gg),(gg+1):(nn-gg),mm-gg+1]
+      } # end low g
+    } # end iterative procedure nfi
+    # iterative procedure nfn, for 1 <= m <= n-1:
+    for (mm in 1:(nn-1)) for (gg in 1:mm) {
+      if (gg>=nn-gg) nfn[[nn]][2:(nn-gg+1),gg,mm+1] <- 
+          nfn[[nn]][2:(nn-gg+1),gg,mm+1] + 
+          cumsumm(nfi[[nn-gg]][1:(nn-gg),,mm+1])
+      if (gg<nn-gg) {
+        nfn[[nn]][2:(nn-gg+1),gg,mm+1] <- 
+          nfn[[nn]][2:(nn-gg+1),gg,mm+1] + 
+          nfi[[nn-gg]][1:(nn-gg),,mm-gg+1]
+        nfn[[nn]][2:(nn-gg+1),(gg+1):(nn-gg),mm+1] <- 
+          nfn[[nn]][2:(nn-gg+1),(gg+1):(nn-gg),mm+1] + 
+          nfi[[nn-gg]][1:(nn-gg),(gg+1):(nn-gg),mm+1]
+      } # end low g
+    } # end iterative procedure nfi
+  } # end for nn
   return(list(nfi = nfi, nfn = nfn))
 } # end function crossrunem
 
-tull <- crossrunem(nmax=1)
+tull <- crossrunem(nmax=26)
 tull
 
 # code from crossrunbin, to look at:
 
-  nat <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
-  pbt <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
-  pt <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
-  qat <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
-  qbt <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
-  qt <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
-  for (nn in 2:nmax) {
-    pat[[nn]] <- Rmpfr::mpfr2array(rep(nill, nn * nn), dim = c(nn, nn))
-    pbt[[nn]] <- Rmpfr::mpfr2array(rep(nill, nn * nn), dim = c(nn, nn))
-    rownames(pat[[nn]]) <- c(0:(nn - 1))
-    rownames(pbt[[nn]]) <- c(0:(nn - 1))
-    colnames(pat[[nn]]) <- c(1:nn)
-    colnames(pbt[[nn]]) <- c(1:nn)
-    pat[[nn]][1, nn] <- (pmultm^(nn - 1))  # from cond on no crossing
-    pbt[[nn]][1, nn] <- (qmultm^(nn - 1))  # from cond on no crossing
-    for (ff in 2:nn) {
-      # from cond on first crossing at ff if last part shortest:
-      if (nn - ff + 1 <= ff - 1)
-      {
-        f1 <- ff  # unnecessary, but makes code checking easier
-        pat[[nn]][2:(nn - f1 + 2), f1 - 1] <- pat[[nn]][2:(nn -
-                                                             f1 + 2), f1 - 1] + (pmultm^(f1 - 2)) * qmultm *
-          qbt[[nn - f1 + 1]][1:(nn - f1 + 1), nn - f1 + 1]
-        pbt[[nn]][2:(nn - f1 + 2), f1 - 1] <- pbt[[nn]][2:(nn -
-                                                             f1 + 2), f1 - 1] + (qmultm^(f1 - 2)) * pmultm *
-          qat[[nn - f1 + 1]][1:(nn - f1 + 1), nn - f1 + 1]
-      }  # end if last part shortest
-      if (nn - ff + 1 > ff - 1)
-      {
-        # if last part longest
-        f2 <- ff  # unnecessary, but makes code checking easier
-        pat[[nn]][2:(nn - f2 + 2), f2 - 1] <- pat[[nn]][2:(nn -
-                                                             f2 + 2), f2 - 1] + (pmultm^(f2 - 2)) * qmultm *
-          qbt[[nn - f2 + 1]][1:(nn - f2 + 1), f2 - 1]
-        pat[[nn]][2:(nn - f2 + 2), f2:(nn - f2 + 1)] <- pat[[nn]][2:(nn -
-                                                                       f2 + 2), f2:(nn - f2 + 1)] + (pmultm^(f2 - 2)) *
-          qmultm * pbt[[nn - f2 + 1]][1:(nn - f2 + 1), f2:(nn -
-                                                             f2 + 1)]
-        pbt[[nn]][2:(nn - f2 + 2), f2 - 1] <- pbt[[nn]][2:(nn -
-                                                             f2 + 2), f2 - 1] + (qmultm^(f2 - 2)) * pmultm *
-          qat[[nn - f2 + 1]][1:(nn - f2 + 1), f2 - 1]
-        pbt[[nn]][2:(nn - f2 + 2), f2:(nn - f2 + 1)] <- pbt[[nn]][2:(nn -
-                                                                       f2 + 2), f2:(nn - f2 + 1)] + (qmultm^(f2 - 2)) *
-          pmultm * pat[[nn - f2 + 1]][1:(nn - f2 + 1), f2:(nn -
-                                                             f2 + 1)]
-      }  # end if last part longest
-    }  # end for ff
-    pt[[nn]] <- pm * pat[[nn]] + qm * pbt[[nn]]
-    qat[[nn]] <- cumsumm(pat[[nn]])
-    qbt[[nn]] <- cumsumm(pbt[[nn]])
-    qt[[nn]] <- pm * qat[[nn]] + qm * qbt[[nn]]
-    rownames(pt[[nn]]) <- c(0:(nn - 1))
-    colnames(pt[[nn]]) <- c(1:nn)
-    rownames(qat[[nn]]) <- c(0:(nn - 1))
-    colnames(qat[[nn]]) <- c(1:nn)
-    rownames(qbt[[nn]]) <- c(0:(nn - 1))
-    rownames(qat[[nn]]) <- c(0:(nn - 1))
-    colnames(qt[[nn]]) <- c(1:nn)
-    colnames(qt[[nn]]) <- c(1:nn)
-    if (printn)
+nat <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
+pbt <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
+pt <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
+qat <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
+qbt <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
+qt <- list(pt1 = Rmpfr::mpfr2array(one, dim = c(1, 1)))
+for (nn in 2:nmax) {
+  pat[[nn]] <- Rmpfr::mpfr2array(rep(nill, nn * nn), dim = c(nn, nn))
+  pbt[[nn]] <- Rmpfr::mpfr2array(rep(nill, nn * nn), dim = c(nn, nn))
+  rownames(pat[[nn]]) <- c(0:(nn - 1))
+  rownames(pbt[[nn]]) <- c(0:(nn - 1))
+  colnames(pat[[nn]]) <- c(1:nn)
+  colnames(pbt[[nn]]) <- c(1:nn)
+  pat[[nn]][1, nn] <- (pmultm^(nn - 1))  # from cond on no crossing
+  pbt[[nn]][1, nn] <- (qmultm^(nn - 1))  # from cond on no crossing
+  for (ff in 2:nn) {
+    # from cond on first crossing at ff if last part shortest:
+    if (nn - ff + 1 <= ff - 1)
     {
-      print(nn)
-      print(Sys.time())
-    }  # end optional timing information
-  }  # end for nn
-  names(pat) <- paste("pat", 1:nmax, sep = "")
-  names(pbt) <- paste("pbt", 1:nmax, sep = "")
-  names(pt) <- paste("pt", 1:nmax, sep = "")
-  names(qat) <- paste("qat", 1:nmax, sep = "")
-  names(qbt) <- paste("qbt", 1:nmax, sep = "")
-  names(qt) <- paste("qt", 1:nmax, sep = "")
-  return(list(pat = pat, pbt = pbt, pt = pt, qat = qat, qbt = qbt,
-              qt = qt))
+      f1 <- ff  # unnecessary, but makes code checking easier
+      pat[[nn]][2:(nn - f1 + 2), f1 - 1] <- pat[[nn]][2:(nn -
+                                                           f1 + 2), f1 - 1] + (pmultm^(f1 - 2)) * qmultm *
+        qbt[[nn - f1 + 1]][1:(nn - f1 + 1), nn - f1 + 1]
+      pbt[[nn]][2:(nn - f1 + 2), f1 - 1] <- pbt[[nn]][2:(nn -
+                                                           f1 + 2), f1 - 1] + (qmultm^(f1 - 2)) * pmultm *
+        qat[[nn - f1 + 1]][1:(nn - f1 + 1), nn - f1 + 1]
+    }  # end if last part shortest
+    if (nn - ff + 1 > ff - 1)
+    {
+      # if last part longest
+      f2 <- ff  # unnecessary, but makes code checking easier
+      pat[[nn]][2:(nn - f2 + 2), f2 - 1] <- pat[[nn]][2:(nn -
+                                                           f2 + 2), f2 - 1] + (pmultm^(f2 - 2)) * qmultm *
+        qbt[[nn - f2 + 1]][1:(nn - f2 + 1), f2 - 1]
+      pat[[nn]][2:(nn - f2 + 2), f2:(nn - f2 + 1)] <- pat[[nn]][2:(nn -
+                                                                     f2 + 2), f2:(nn - f2 + 1)] + (pmultm^(f2 - 2)) *
+        qmultm * pbt[[nn - f2 + 1]][1:(nn - f2 + 1), f2:(nn -
+                                                           f2 + 1)]
+      pbt[[nn]][2:(nn - f2 + 2), f2 - 1] <- pbt[[nn]][2:(nn -
+                                                           f2 + 2), f2 - 1] + (qmultm^(f2 - 2)) * pmultm *
+        qat[[nn - f2 + 1]][1:(nn - f2 + 1), f2 - 1]
+      pbt[[nn]][2:(nn - f2 + 2), f2:(nn - f2 + 1)] <- pbt[[nn]][2:(nn -
+                                                                     f2 + 2), f2:(nn - f2 + 1)] + (qmultm^(f2 - 2)) *
+        pmultm * pat[[nn - f2 + 1]][1:(nn - f2 + 1), f2:(nn -
+                                                           f2 + 1)]
+    }  # end if last part longest
+  }  # end for ff
+  pt[[nn]] <- pm * pat[[nn]] + qm * pbt[[nn]]
+  qat[[nn]] <- cumsumm(pat[[nn]])
+  qbt[[nn]] <- cumsumm(pbt[[nn]])
+  qt[[nn]] <- pm * qat[[nn]] + qm * qbt[[nn]]
+  rownames(pt[[nn]]) <- c(0:(nn - 1))
+  colnames(pt[[nn]]) <- c(1:nn)
+  rownames(qat[[nn]]) <- c(0:(nn - 1))
+  colnames(qat[[nn]]) <- c(1:nn)
+  rownames(qbt[[nn]]) <- c(0:(nn - 1))
+  rownames(qat[[nn]]) <- c(0:(nn - 1))
+  colnames(qt[[nn]]) <- c(1:nn)
+  colnames(qt[[nn]]) <- c(1:nn)
+  if (printn)
+  {
+    print(nn)
+    print(Sys.time())
+  }  # end optional timing information
+}  # end for nn
+names(pat) <- paste("pat", 1:nmax, sep = "")
+names(pbt) <- paste("pbt", 1:nmax, sep = "")
+names(pt) <- paste("pt", 1:nmax, sep = "")
+names(qat) <- paste("qat", 1:nmax, sep = "")
+names(qbt) <- paste("qbt", 1:nmax, sep = "")
+names(qt) <- paste("qt", 1:nmax, sep = "")
+return(list(pat = pat, pbt = pbt, pt = pt, qat = qat, qbt = qbt,
+            qt = qt))
 } # end function cl
