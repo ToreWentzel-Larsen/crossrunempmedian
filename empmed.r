@@ -234,18 +234,19 @@ crossrunem <- function(nmax = 100, prec = 120,
             nfi[[nn]][2:(nn-gg+1),gg,mm+1] + nfn[[1]][1,1,1]
         else
           nfi[[nn]][2:(nn-gg+1),gg,mm+1] <- 
-          nfi[[nn]][2:(nn-gg+1),gg,mm+1] + 
-          crossrun::cumsumm(nfn[[nn-gg]][1:(nn-gg),,mm-gg+1])[,nn-gg]
+            nfi[[nn]][2:(nn-gg+1),gg,mm+1] + 
+            crossrun::cumsumm(nfn[[nn-gg]][1:(nn-gg),,mm-gg+1])[,nn-gg]
       }
       if (gg<nn-gg) {
         if (gg==1) {
           nfi[[nn]][2:(nn-gg+1),gg,mm+1] <- 
-          nfi[[nn]][2:(nn-gg+1),gg,mm+1] + 
-          nfn[[nn-gg]][1:(nn-gg),1:gg,mm-gg+1]
+            nfi[[nn]][2:(nn-gg+1),gg,mm+1] + 
+            nfn[[nn-gg]][1:(nn-gg),1:gg,mm-gg+1]
         }
         else {
+          nfi[[nn]][2:(nn-gg+1),gg,mm+1] <- 
           nfi[[nn]][2:(nn-gg+1),gg,mm+1] + 
-          crossrun::cumsumm(nfn[[nn-gg]][1:(nn-gg),1:gg,mm-gg+1])[,gg]
+            crossrun::cumsumm(nfn[[nn-gg]][1:(nn-gg),1:gg,mm-gg+1])[,gg]
         }
         nfi[[nn]][2:(nn-gg+1),(gg+1):(nn-gg),mm+1] <- 
           nfi[[nn]][2:(nn-gg+1),(gg+1):(nn-gg),mm+1] + 
@@ -271,6 +272,7 @@ crossrunem <- function(nmax = 100, prec = 120,
             nfi[[nn-gg]][1:(nn-gg),1:gg,mm+1]
         }
         else {
+          nfn[[nn]][2:(nn-gg+1),gg,mm+1] <-
           nfn[[nn]][2:(nn-gg+1),gg,mm+1] + 
             crossrun::cumsumm(nfi[[nn-gg]][1:(nn-gg),1:gg,mm+1])[,gg]
         }
@@ -286,5 +288,34 @@ crossrunem <- function(nmax = 100, prec = 120,
 Sys.time()
 tull <- crossrunem(nmax=10)
 Sys.time() # noen få sekunder
-asNumeric(tull$nfi[[6]][,,4])
+asNumeric(tull$nfi[[5]])
+asNumeric(tull$nfn[[5]])
+# stemmer, flere:
+Sys.time()
+tull28 <- crossrunem(nmax=28)
+Sys.time() # snaut 2 minutter
+asNumeric(tull28$nfi[[28]][,,15]) # bare det følgende ulik 0
+asNumeric(tull28$nfi[[28]][-1,1:14,15])
+cl14
+asNumeric(tull28$nfi[[28]][-1,1:14,15]) - cl14 # stemmer,likt 
+# sjekker hele vegen nedenfor:
+asNumeric(tull28$nfi[[4]][-1,1:2,3]) - cl2
+asNumeric(tull28$nfi[[6]][-1,1:3,4]) - cl3
+asNumeric(tull28$nfi[[8]][-1,1:4,5]) - cl4
+asNumeric(tull28$nfi[[10]][-1,1:5,6]) - cl5
+asNumeric(tull28$nfi[[12]][-1,1:6,7]) - cl6
+asNumeric(tull28$nfi[[14]][-1,1:7,8]) - cl7
+asNumeric(tull28$nfi[[16]][-1,1:8,9]) - cl8
+asNumeric(tull28$nfi[[18]][-1,1:9,10]) - cl9
+asNumeric(tull28$nfi[[20]][-1,1:10,11]) - cl10
+asNumeric(tull28$nfi[[22]][-1,1:11,12]) - cl11
+asNumeric(tull28$nfi[[24]][-1,1:12,13]) - cl12
+asNumeric(tull28$nfi[[26]][-1,1:13,14]) - cl13
+# alt er helt likt
+# til 100:
+Sys.time()
+em100 <- crossrunem(nmax=100)
+Sys.time() 
+
+
 
