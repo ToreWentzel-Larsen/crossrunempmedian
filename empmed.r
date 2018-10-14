@@ -338,13 +338,13 @@ sum(abs(asNumeric(em60$nfi[[26]][-1,1:13,14]) - cl13))
 sum(abs(asNumeric(em60$nfi[[28]][-1,1:14,15]) - cl14))
 # check og equality between nfi andnfn for even n and m=n/2;
 for (mm in 1:30) print(c(mm,2*mm,
-        sum(abs(asNumeric(em60$nfi[[2*mm]][,,mm+1] - 
-                            em60$nfn[[2*mm]][,,mm+1])))))
+                         sum(abs(asNumeric(em60$nfi[[2*mm]][,,mm+1] - 
+                                             em60$nfn[[2*mm]][,,mm+1])))))
 # sjekk av konsistens mellom em60$nfi[[2*mm]][,,mm+1] og
 # em60$nfi[[2*mm]][-1,1:mm,mm+1]:
 for (mm in 1:30) print(c(mm,2*mm,
-        sum(asNumeric(em60$nfi[[2*mm]][,,mm+1])) -
-          sum(asNumeric(em60$nfi[[2*mm]][-1,1:mm,mm+1])))) 
+                         sum(asNumeric(em60$nfi[[2*mm]][,,mm+1])) -
+                           sum(asNumeric(em60$nfi[[2*mm]][-1,1:mm,mm+1])))) 
 
 # check with simulations for n=60:
 #simulate for m=14 (n=2*14=28):
@@ -465,3 +465,83 @@ crossrunemcont <- function(emstart, n1=61, nmax = 100,
 
 # check for low n:
 em15cont <- crossrunemcont(em10, n1=11, nmax=15,printn=TRUE)
+for (mm in 0:11) print(sum(abs(asNumeric(em28$nfi[[11]][,,mm+1])-asNumeric(em15cont$nfi[[11]][,,mm+1]))))
+for (mm in 0:12) print(sum(abs(asNumeric(em28$nfi[[12]][,,mm+1])-asNumeric(em15cont$nfi[[12]][,,mm+1]))))
+for (mm in 0:13) print(sum(abs(asNumeric(em28$nfi[[13]][,,mm+1])-asNumeric(em15cont$nfi[[13]][,,mm+1]))))
+for (mm in 0:14) print(sum(abs(asNumeric(em28$nfi[[14]][,,mm+1])-asNumeric(em15cont$nfi[[14]][,,mm+1]))))
+for (mm in 0:15) print(sum(abs(asNumeric(em28$nfi[[15]][,,mm+1])-asNumeric(em15cont$nfi[[15]][,,mm+1]))))
+# all equal, ok21
+
+# save as new object:
+save.image("C:/Users/Public/Documents/ToRe/Statistisk prosesskontroll/crossrunempmed/crossrunem2.rdata.RData")
+# delete objects no longer needed:
+rm(check4,check5,em10,em15cont,em28,g9.4,jointem60,simcl14,simcl30,
+   cl10,cl11,cl12,cl13,cl14,cl2,cl3,cl4,cl5,cl6,cl7,cl8,cl9,mm)
+gc()
+save.image("C:/Users/Public/Documents/ToRe/Statistisk prosesskontroll/crossrunempmed/crossrunem2.rdata.RData")
+
+# extend em60:
+Sys.time()
+em64cont <-  crossrunemcont(em60, n1=61, nmax=64,printn=TRUE)
+Sys.time()
+
+# check em64cont with em60:
+check6064 <- c(NA)
+for (nn in 1:60) for (mm in 0:nn) check6064 <- c(check6064, sum(abs(asNumeric(em60$nfi[[nn]][,,mm+1])-
+                                                  asNumeric(em64cont$nfi[[nn]][,,mm+1]))))
+summary(check6064) # no differences, ok
+
+# delete em60:
+rm(em60)
+gc()
+
+# extract the joint distributions of Cand L for even n=2m:
+em32 <- list(Rmpfr::mpfrArray(0, prec=120, dim = c(1, 1)))
+em32[[1]] <- em64cont$nfi[[2]][,,2][-1,1]
+for (mm in 2:32) em32[[mm]] <- em64cont$nfi[[2*mm]][,,mm+1][-1,1:mm]
+
+# check for n=64 with simulations:
+checksim <- function(joint1,simul1) {
+  m1 <- dim(joint1)[2]
+  n1 <- 2*m1
+  n1m1 <- n1 - 1
+  cmean <- sum(apply(joint1,1,sum)*c(1:n1m1))/sum(joint1)
+  cmeansim <- mean(simul1$cs)
+  lmean <- sum(apply(joint1,2,sum)*c(1:m1))/sum(joint1)
+  lmeansim <-  mean(simul1$ls)
+  csd <- sqrt(sum(apply(joint1,1,sum)*c(1:n1m1)^2)/sum(joint1) -
+         cmean^2)
+  csdsim <- sd(simul1$cs)
+  lsd <- sqrt(sum(apply(joint1,2,sum)*c(1:m1)^2)/sum(joint1) -
+         lmean^2)
+  lsdsim <- sd(simul1$ls)
+  clmean <- sum(diag(1:n1m1) %*% joint1 %*% diag(1:m1))/sum(joint1)
+  clmeansim <- mean(simul1$cs*simul1$ls)
+  res <- asNumeric(c(cmean,cmeansim,lmean,lmeansim,csd,csdsim,lsd,lsdsim,
+                     clmean,clmeansim))
+  names(res) <- c("cmean","cmeansim","lmean","lmeansim","csd","csdsim",
+                  "lsd","lsdsim","clmean","clmeansim")
+  # check theoretical and empirical cdf:
+  par(mfrow=c(1,2))
+  plot(x=as.numeric(names(table(simul1$cs))),
+       y=(cumsum(cumsumm(joint1)[,14])/(sum(joint1)))[
+         as.numeric(names(table(simul1$cs)))],
+       type="l", ylab="CDF", las=1,
+       main="Number of crossings", xlab="red: simulations")
+  points(x=as.numeric(names(table(simul1$cs))),
+         y=cumsum(table(simul1$cs))/sum(table(simul1$cs)),
+         type="l", col="red",lty="dotted")
+  plot(x=as.numeric(names(table(simul1$ls))),
+       y=(cumsum(cumsummcol(joint1)[n1m1,])/(sum(joint1)))[
+         as.numeric(names(table(simul1$ls)))],
+       type="l", ylab="CDF", las=1,
+       main="Longest run", xlab="red: simulations")
+  points(x=as.numeric(names(table(simul1$ls))),
+         y=cumsum(table(simul1$ls))/sum(table(simul1$ls)),
+         type="l", col="red",lty="dotted")
+  par(mfrow=c(1,1))
+  return(res)
+} # end function checksim
+
+#simcl32 <- simclem(m1=32)
+checksim(em32[[32]], simcl32)
