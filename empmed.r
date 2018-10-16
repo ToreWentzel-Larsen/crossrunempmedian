@@ -488,7 +488,7 @@ Sys.time()
 # check em64cont with em60:
 check6064 <- c(NA)
 for (nn in 1:60) for (mm in 0:nn) check6064 <- c(check6064, sum(abs(asNumeric(em60$nfi[[nn]][,,mm+1])-
-                                                  asNumeric(em64cont$nfi[[nn]][,,mm+1]))))
+                                                                      asNumeric(em64cont$nfi[[nn]][,,mm+1]))))
 summary(check6064) # no differences, ok
 
 # delete em60:
@@ -510,10 +510,10 @@ checksim <- function(joint1,simul1) {
   lmean <- sum(apply(joint1,2,sum)*c(1:m1))/sum(joint1)
   lmeansim <-  mean(simul1$ls)
   csd <- sqrt(sum(apply(joint1,1,sum)*c(1:n1m1)^2)/sum(joint1) -
-         cmean^2)
+                cmean^2)
   csdsim <- sd(simul1$cs)
   lsd <- sqrt(sum(apply(joint1,2,sum)*c(1:m1)^2)/sum(joint1) -
-         lmean^2)
+                lmean^2)
   lsdsim <- sd(simul1$ls)
   clmean <- sum(diag(1:n1m1) %*% joint1 %*% diag(1:m1))/sum(joint1)
   clmeansim <- mean(simul1$cs*simul1$ls)
@@ -524,7 +524,7 @@ checksim <- function(joint1,simul1) {
   # check theoretical and empirical cdf:
   par(mfrow=c(1,2))
   plot(x=as.numeric(names(table(simul1$cs))),
-       y=(cumsum(cumsumm(joint1)[,14])/(sum(joint1)))[
+       y=(cumsum(cumsumm(joint1)[,m1])/(sum(joint1)))[
          as.numeric(names(table(simul1$cs)))],
        type="l", ylab="CDF", las=1,
        main="Number of crossings", xlab="red: simulations")
@@ -545,3 +545,61 @@ checksim <- function(joint1,simul1) {
 
 #simcl32 <- simclem(m1=32)
 checksim(em32[[32]], simcl32)
+
+# also load workspace from ordinary crossrun:
+load("C:/Users/Public/Documents/ToRe/Statistisk prosesskontroll/crossrun/crossrun.RData")
+# delete all except the symmetric joint crossrun distribution and saves:
+rm(check15,checkcutbox12,cl100simshift,crs100..2,
+   crs100..4,crs100..6,crs100..8,crs100.0,crs100.1.2,
+   crs100.1.4,crs100.1.6,crs100.1.8,crs100.2,crs100.2.2,
+   crs100.2.4,crs100.2.6,crs100.2.8,crs100.3,
+   ca1,cb1,cbn,cbord1,col.4,col.8,col1.2,la1,lb1,
+   lbord1,mm,n.keepcorner,n.removecorner)
+
+#compare em32 distributions with corresponding distributions in crossrun:
+comparecrem <- function(cr1, em1) {
+  m1 <- dim(em1)[2]
+  n1 <- 2*m1
+  n1m1 <- n1 - 1
+  cmeancr <- sum(apply(cr1,1,sum)*c(0:n1m1))/sum(cr1)
+  cmeanem <- sum(apply(em1,1,sum)*c(1:n1m1))/sum(em1)
+  lmeancr <- sum(apply(cr1,2,sum)*c(1:n1))/sum(cr1)
+  lmeanem <- sum(apply(em1,2,sum)*c(1:m1))/sum(em1)
+  csdcr <- sqrt(sum(apply(cr1,1,sum)*c(0:n1m1)^2)/sum(cr1) -
+                  cmeancr^2)
+  csdem <- sqrt(sum(apply(em1,1,sum)*c(1:n1m1)^2)/sum(em1) -
+                  cmeanem^2)
+  lsdcr <- sqrt(sum(apply(cr1,2,sum)*c(1:n1)^2)/sum(cr1) -
+                lmeancr^2)
+  lsdem <- sqrt(sum(apply(em1,2,sum)*c(1:m1)^2)/sum(em1) -
+                lmeanem^2)
+  clmeancr <- sum(diag(0:n1m1) %*% cr1 %*% diag(1:n1))/sum(cr1)
+  clmeanem <- sum(diag(1:n1m1) %*% em1 %*% diag(1:m1))/sum(em1)
+  res <- asNumeric(c(cmeancr,cmeanem,lmeancr,lmeanem,csdcr,csdem,
+                     lsdcr,lsdem,clmeancr,clmeanem))
+  names(res) <- c("cmeancr","cmeanem","lmeancr","lmeanem","csdcr",
+                  "csdem","lsdcr","lsdem","clmeancr","clmeanem")
+  # check theoretical and empirical cdf:
+  par(mfrow=c(1,2))
+  plot(x=0:n1m1, y=cumsum(cumsumm(cr1)[,n1])/sum(cr1),
+       type="l", ylab="CDF", las=1,
+       main="Number of crossings", xlab="red: em")
+  points(x=1:n1m1,
+         y=cumsum(cumsumm(em1)[,m1])/(sum(em1)),
+         type="l", col="red",lty="dotted")
+  plot(x=1:n1, y=cumsum(cumsummcol(cr1)[n1,])/sum(cr1),
+       type="l", ylab="CDF", las=1,
+       main="Longest run", xlab="red: simulations")
+  points(x=1:m1, y=cumsum(cumsummcol(em1)[n1m1,])/sum(em1),
+         type="l", col="red",lty="dotted")
+  par(mfrow=c(1,1))
+  return(res)
+} # end function comparecrem
+
+comparecrem64 <- comparecrem(cr100$pt[[64]], em32[[32]])
+comparecrem32 <- comparecrem(cr100$pt[[32]], em32[[16]])
+comparecrem16 <- comparecrem(cr100$pt[[16]], em32[[8]])
+comparecrem64
+comparecrem32
+comparecrem16
+
