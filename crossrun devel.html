@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="pandoc">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="date" content="2018-10-25">
+
+<title>crossrun: An R Package for the Joint Distribution of Number of Crossings and Longest Run in Independent Bernoulli Observations</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+<script type="text/javascript" src="Filer_for_crossrun%20devel/MathJax.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style type="text/css">.MathJax_Display {text-align: center; margin: 1em 0em; position: relative; display: block!important; text-indent: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; width: 100%}
+.MathJax .merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MathJax .MJX-monospace {font-family: monospace}
+.MathJax .MJX-sans-serif {font-family: sans-serif}
+#MathJax_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true'); padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.MathJax {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; padding: 0; margin: 0}
+.MathJax:focus, body :focus .MathJax {display: inline-table}
+.MathJax.MathJax_FullWidth {text-align: center; display: table-cell!important; width: 10000em!important}
+.MathJax img, .MathJax nobr, .MathJax a {border: 0; padding: 0; margin: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+img.MathJax_strut {border: 0!important; padding: 0!important; margin: 0!important; vertical-align: 0!important}
+.MathJax span {display: inline; position: static; border: 0; padding: 0; margin: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+.MathJax nobr {white-space: nowrap!important}
+.MathJax img {display: inline!important; float: none!important}
+.MathJax * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none}
+.MathJax_Processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden}
+.MathJax_Processed {display: none!important}
+.MathJax_ExBox {display: block!important; overflow: hidden; width: 1px; height: 60ex; min-height: 0; max-height: none}
+.MathJax .MathJax_EmBox {display: block!important; overflow: hidden; width: 1px; height: 60em; min-height: 0; max-height: none}
+.MathJax_LineBox {display: table!important}
+.MathJax_LineBox span {display: table-cell!important; width: 10000em!important; min-width: 0; max-width: none; padding: 0; border: 0; margin: 0}
+.MathJax .MathJax_HitBox {cursor: text; background: white; opacity: 0; filter: alpha(opacity=0)}
+.MathJax .MathJax_HitBox * {filter: none; opacity: 1; background: transparent}
+#MathJax_Tooltip * {filter: none; opacity: 1; background: transparent}
+@font-face {font-family: MathJax_Main; src: url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff?V=2.7.2') format('woff'), url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf?V=2.7.2') format('opentype')}
+@font-face {font-family: MathJax_Main; src: url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff?V=2.7.2') format('woff'), url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Bold.otf?V=2.7.2') format('opentype'); font-weight: bold}
+@font-face {font-family: MathJax_Main; src: url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff?V=2.7.2') format('woff'), url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Italic.otf?V=2.7.2') format('opentype'); font-style: italic}
+@font-face {font-family: MathJax_Math; src: url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff?V=2.7.2') format('woff'), url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf?V=2.7.2') format('opentype'); font-style: italic}
+@font-face {font-family: MathJax_Caligraphic; src: url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff?V=2.7.2') format('woff'), url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Regular.otf?V=2.7.2') format('opentype')}
+@font-face {font-family: MathJax_Size1; src: url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff?V=2.7.2') format('woff'), url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/otf/MathJax_Size1-Regular.otf?V=2.7.2') format('opentype')}
+@font-face {font-family: MathJax_Size2; src: url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff?V=2.7.2') format('woff'), url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/otf/MathJax_Size2-Regular.otf?V=2.7.2') format('opentype')}
+@font-face {font-family: MathJax_Size3; src: url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff?V=2.7.2') format('woff'), url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/otf/MathJax_Size3-Regular.otf?V=2.7.2') format('opentype')}
+@font-face {font-family: MathJax_Size4; src: url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff?V=2.7.2') format('woff'), url('https://mathjax.rstudio.com/latest/fonts/HTML-CSS/TeX/otf/MathJax_Size4-Regular.otf?V=2.7.2') format('opentype')}
+.MathJax .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+
+<body><div style="visibility: hidden; overflow: hidden; position: absolute; top: 0px; height: 1px; width: auto; padding: 0px; border: 0px none; margin: 0px; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal;"><div id="MathJax_Hidden"></div></div><div id="MathJax_Message" style="display: none;"></div>
+
+
+
+
+<h1 class="title toc-ignore">crossrun: An R Package for the Joint Distribution of Number of Crossings and Longest Run in Independent Bernoulli Observations</h1>
+<h4 class="author"><em>Tore Wentzel-Larsen</em></h4>
+<address class="author_afil">
+Centre for Child and Adolescent Mental Health, Eastern and Southern 
+Norway; Norwegian Centre of Violence and Traumatic Stress Studies<br><a class="author_email" href="mailto:#"></a><a href="mailto:tore.wentzellarsen@gmail.com">tore.wentzellarsen@gmail.com</a>
+</address>
+<h4 class="author"><em>Jacob Anhøj</em></h4>
+<address class="author_afil">
+Rigshospitalet, University of Copenhagen, Denmark<br><a class="author_email" href="mailto:#"></a><a href="mailto:jacob@anhoej.net">jacob@anhoej.net</a>
+</address>
+<h4 class="date"><em>2018-10-25</em></h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#the-main-function-crossrunbin">The main function: <code>crossrunbin</code></a></li>
+<li><a href="#the-times-representation-of-the-joint-distributions">The “times” representation of the joint distributions</a></li>
+<li><a href="#the-symmetric-case-crossrunsymm">The symmetric case: <code>crossrunsymm</code></a></li>
+<li><a href="#generalisation">Generalisation</a></li>
+<li><a href="#when-the-median-is-determined-by-the-data-itself">When the median is determined by the data itself</a></li>
+<li><a href="#limitations">Limitations</a></li>
+<li><a href="#conclusions">Conclusions</a></li>
+<li><a href="#references">References</a></li>
+<li><a href="#appendix-checking-procedures">Appendix: Checking procedures</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The setting is defined by a number, n, of independent observations 
+from a Bernoulli distribution with equal success probability. In 
+statistical process control, our main intended application, this may be 
+the useful observations in a run chart recording values above and below a
+ pre-specified centre line (usually the median obtained from historical 
+data) disregarding any observations equal to the centre line (<a href="http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0121349">Anhøj (2015)</a>). If the centre line is the median in the same data set the main procedures do not apply, but <code>crossrun</code>
+ includes a procedure for this case that, however, is of higher 
+algorithmic complexity and at present cannot be used for all sequence 
+lengths of practical importance.</p>
+<p>The focus of <code>crossrun</code> is the number of crossings, C, and
+ the length of the longest run in the sequence, L. A run is a sequence 
+of successes or failures, delimited by a different observation or the 
+start or end of the entire sequence. A crossing is two adjacent 
+different observations.</p>
+<p>Figure 1 illustrates runs and crossings in a run chart with 24 
+observations. Observations above and below the median represent 
+successes and failures respectively:</p>
+<div class="figure">
+<img src="data:image/png;base64,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" alt="Figure 1">
+<p class="caption">Figure 1</p>
+</div>
+<p>The longest run consists of observations 12-16 below the median. 
+Thus, the length of the longest run is L = 5 in this case. The number of
+ crossings of the median is C = 11.</p>
+<p>C and L are inversely related. All things being equal, when one goes up, the other goes down. <code>crossrun</code> computes the joint distribution of C and L.</p>
+<p>C and L are integers. C may be any integer between 0, if all 
+observations are equal, and n - 1 if all subsequent observations are 
+different. L may be any integer between 1, if all subsequent 
+observations are different, and n, if all observations are equal. Not 
+all combinations of C and L are possible as shown in the following 
+example for n = 14 and success probability = 0.5.</p>
+<table>
+<caption>Table 1</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">L = 1</th>
+<th align="right">2</th>
+<th align="right">3</th>
+<th align="right">4</th>
+<th align="right">5</th>
+<th align="right">6</th>
+<th align="right">7</th>
+<th align="right">8</th>
+<th align="right">9</th>
+<th align="right">10</th>
+<th align="right">11</th>
+<th align="right">12</th>
+<th align="right">13</th>
+<th align="right">14</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C = 0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">12</td>
+<td align="right">18</td>
+<td align="right">15</td>
+<td align="right">12</td>
+<td align="right">9</td>
+<td align="right">6</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">10</td>
+<td align="right">58</td>
+<td align="right">78</td>
+<td align="right">60</td>
+<td align="right">40</td>
+<td align="right">24</td>
+<td align="right">12</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">5</td>
+<td align="right">130</td>
+<td align="right">230</td>
+<td align="right">175</td>
+<td align="right">100</td>
+<td align="right">50</td>
+<td align="right">20</td>
+<td align="right">5</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">90</td>
+<td align="right">456</td>
+<td align="right">405</td>
+<td align="right">210</td>
+<td align="right">90</td>
+<td align="right">30</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">392</td>
+<td align="right">735</td>
+<td align="right">392</td>
+<td align="right">147</td>
+<td align="right">42</td>
+<td align="right">7</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td align="right">0</td>
+<td align="right">28</td>
+<td align="right">756</td>
+<td align="right">644</td>
+<td align="right">224</td>
+<td align="right">56</td>
+<td align="right">8</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td align="right">0</td>
+<td align="right">126</td>
+<td align="right">756</td>
+<td align="right">324</td>
+<td align="right">72</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td align="right">0</td>
+<td align="right">210</td>
+<td align="right">405</td>
+<td align="right">90</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>10</td>
+<td align="right">0</td>
+<td align="right">165</td>
+<td align="right">110</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>11</td>
+<td align="right">0</td>
+<td align="right">66</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>12</td>
+<td align="right">0</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>13</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>As will be described and justified in more detail later, the table 
+above does not give the probabilities themselves, but the probabilities 
+multiplied by <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-1-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-1" style="width: 2.324em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.905em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.16em, 1001.91em, 2.381em, -1000em); top: -2.202em; left: 0em;"><span class="mrow" id="MathJax-Span-2"><span class="msubsup" id="MathJax-Span-3"><span style="display: inline-block; position: relative; width: 1.903em; height: 0px;"><span style="position: absolute; clip: rect(3.144em, 1000.45em, 4.167em, -1000em); top: -3.988em; left: 0em;"><span class="mn" id="MathJax-Span-4" style="font-family: MathJax_Main;">2</span><span style="display: inline-block; width: 0px; height: 3.988em;"></span></span><span style="position: absolute; top: -4.381em; left: 0.5em;"><span class="texatom" id="MathJax-Span-5"><span class="mrow" id="MathJax-Span-6"><span class="mi" id="MathJax-Span-7" style="font-size: 70.7%; font-family: MathJax_Math; font-style: italic;">n</span><span class="mo" id="MathJax-Span-8" style="font-size: 70.7%; font-family: MathJax_Main;">−</span><span class="mn" id="MathJax-Span-9" style="font-size: 70.7%; font-family: MathJax_Main;">1</span></span></span><span style="display: inline-block; width: 0px; height: 3.988em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.202em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.071em; border-left: 0px solid; width: 0px; height: 1.18em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mrow class="MJX-TeXAtom-ORD"><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></math></span></span><script type="math/tex" id="MathJax-Element-1">2^{n-1}</script></span>, that is 8192 for n = 14. For instance <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-2-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;C&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;6&lt;/mn&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;L&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-10" style="width: 8.515em; display: inline-block;"><span style="display: inline-block; position: relative; width: 7.083em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.393em, 1006.99em, 2.75em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-11"><span class="mi" id="MathJax-Span-12" style="font-family: MathJax_Math; font-style: italic;">P<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.109em;"></span></span><span class="mo" id="MathJax-Span-13" style="font-family: MathJax_Main;">(</span><span class="mi" id="MathJax-Span-14" style="font-family: MathJax_Math; font-style: italic;">C<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.045em;"></span></span><span class="mo" id="MathJax-Span-15" style="font-family: MathJax_Main; padding-left: 0.278em;">=</span><span class="mn" id="MathJax-Span-16" style="font-family: MathJax_Main; padding-left: 0.278em;">6</span><span class="mo" id="MathJax-Span-17" style="font-family: MathJax_Main;">,</span><span class="mi" id="MathJax-Span-18" style="font-family: MathJax_Math; font-style: italic; padding-left: 0.167em;">L</span><span class="mo" id="MathJax-Span-19" style="font-family: MathJax_Main; padding-left: 0.278em;">=</span><span class="mn" id="MathJax-Span-20" style="font-family: MathJax_Main; padding-left: 0.278em;">5</span><span class="mo" id="MathJax-Span-21" style="font-family: MathJax_Main;">)</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.371em; border-left: 0px solid; width: 0px; height: 1.343em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>P</mi><mo stretchy="false">(</mo><mi>C</mi><mo>=</mo><mn>6</mn><mo>,</mo><mi>L</mi><mo>=</mo><mn>5</mn><mo stretchy="false">)</mo></math></span></span><script type="math/tex" id="MathJax-Element-2">P (C=6, L=5)</script></span> = 392 / 8192 = 0.048. The highest joint probabilities are <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-3-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;C&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;7&lt;/mn&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;L&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-22" style="width: 8.515em; display: inline-block;"><span style="display: inline-block; position: relative; width: 7.083em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.393em, 1006.99em, 2.75em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-23"><span class="mi" id="MathJax-Span-24" style="font-family: MathJax_Math; font-style: italic;">P<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.109em;"></span></span><span class="mo" id="MathJax-Span-25" style="font-family: MathJax_Main;">(</span><span class="mi" id="MathJax-Span-26" style="font-family: MathJax_Math; font-style: italic;">C<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.045em;"></span></span><span class="mo" id="MathJax-Span-27" style="font-family: MathJax_Main; padding-left: 0.278em;">=</span><span class="mn" id="MathJax-Span-28" style="font-family: MathJax_Main; padding-left: 0.278em;">7</span><span class="mo" id="MathJax-Span-29" style="font-family: MathJax_Main;">,</span><span class="mi" id="MathJax-Span-30" style="font-family: MathJax_Math; font-style: italic; padding-left: 0.167em;">L</span><span class="mo" id="MathJax-Span-31" style="font-family: MathJax_Main; padding-left: 0.278em;">=</span><span class="mn" id="MathJax-Span-32" style="font-family: MathJax_Main; padding-left: 0.278em;">3</span><span class="mo" id="MathJax-Span-33" style="font-family: MathJax_Main;">)</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.371em; border-left: 0px solid; width: 0px; height: 1.343em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>P</mi><mo stretchy="false">(</mo><mi>C</mi><mo>=</mo><mn>7</mn><mo>,</mo><mi>L</mi><mo>=</mo><mn>3</mn><mo stretchy="false">)</mo></math></span></span><script type="math/tex" id="MathJax-Element-3">P (C=7, L=3)</script></span> and <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-4-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;P&lt;/mi&gt;&lt;mo stretchy=&quot;false&quot;&gt;(&lt;/mo&gt;&lt;mi&gt;C&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;8&lt;/mn&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;L&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mo stretchy=&quot;false&quot;&gt;)&lt;/mo&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-34" style="width: 8.515em; display: inline-block;"><span style="display: inline-block; position: relative; width: 7.083em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.393em, 1006.99em, 2.75em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-35"><span class="mi" id="MathJax-Span-36" style="font-family: MathJax_Math; font-style: italic;">P<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.109em;"></span></span><span class="mo" id="MathJax-Span-37" style="font-family: MathJax_Main;">(</span><span class="mi" id="MathJax-Span-38" style="font-family: MathJax_Math; font-style: italic;">C<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.045em;"></span></span><span class="mo" id="MathJax-Span-39" style="font-family: MathJax_Main; padding-left: 0.278em;">=</span><span class="mn" id="MathJax-Span-40" style="font-family: MathJax_Main; padding-left: 0.278em;">8</span><span class="mo" id="MathJax-Span-41" style="font-family: MathJax_Main;">,</span><span class="mi" id="MathJax-Span-42" style="font-family: MathJax_Math; font-style: italic; padding-left: 0.167em;">L</span><span class="mo" id="MathJax-Span-43" style="font-family: MathJax_Main; padding-left: 0.278em;">=</span><span class="mn" id="MathJax-Span-44" style="font-family: MathJax_Main; padding-left: 0.278em;">3</span><span class="mo" id="MathJax-Span-45" style="font-family: MathJax_Main;">)</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.371em; border-left: 0px solid; width: 0px; height: 1.343em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>P</mi><mo stretchy="false">(</mo><mi>C</mi><mo>=</mo><mn>8</mn><mo>,</mo><mi>L</mi><mo>=</mo><mn>3</mn><mo stretchy="false">)</mo></math></span></span><script type="math/tex" id="MathJax-Element-4">P (C=8, L=3)</script></span>,
+ both equal to 756 / 8192 = 0.092. Thus, in a run chart with 14 
+observations not on the median, the most likely combinations of number 
+of crossings and longest run are C=7 or 8 and L=3.</p>
+<p>As seen in the table, the non-zero probabilities are confined to a 
+sloped region that is rather narrow but sufficiently wide that the two 
+variables together are more informative than each of them in isolation. 
+These are general phenomena.</p>
+<p>The procedure for computing the joint distribution of C and L is 
+iterative, which means that the joint distribution for a sequence of 
+length n cannot be computed before the joint distributions for all 
+shorter sequences have been computed. At the moment, the computations 
+have been validated for n up to 100, and success probabilities 0.5 to 
+0.9 in steps of 0.1.</p>
+</div>
+<div id="the-main-function-crossrunbin" class="section level2">
+<h2>The main function: <code>crossrunbin</code></h2>
+<p>The function <code>crossrunbin</code> has two main arguments, <code>nmax</code> that is the maximum sequence length and <code>prob</code>
+ that is the success probability. Other arguments include a multiplier 
+described later and a precision parameter, these should normally be left
+ at their default values. An argument <code>printn</code>, if set to TRUE, gives progress information for each step in the usually lengthy computation procedure. See <code>?crossrunbin</code> for details.</p>
+<p>The joint probabilities are stored in a list of 6 lists of which <code>pt</code> is sufficient for normal use. The others are mainly included for code checking. <code>pt</code> gives an n by n matrix for each sequence length n. For instance</p>
+<p><code>crb40.6 &lt;- crossrunbin(nmax = 40, prob = 0.6)$pt</code></p>
+<p>computes the joint probabilities for all sequence lengths <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-5-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo&gt;&amp;#x2264;&lt;/mo&gt;&lt;mn&gt;40&lt;/mn&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-46" style="width: 3.515em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.917em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.466em, 1002.88em, 2.638em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-47"><span class="mi" id="MathJax-Span-48" style="font-family: MathJax_Math; font-style: italic;">n</span><span class="mo" id="MathJax-Span-49" style="font-family: MathJax_Main; padding-left: 0.278em;">≤</span><span class="mn" id="MathJax-Span-50" style="font-family: MathJax_Main; padding-left: 0.278em;">40</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.237em; border-left: 0px solid; width: 0px; height: 1.121em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi><mo>≤</mo><mn>40</mn></math></span></span><script type="math/tex" id="MathJax-Element-5">n \leq 40</script></span> when the success probability is 0.6. For simplicity, the command above only returns the joint probabilities <code>pt</code>. When the computation is finished, the joint distribution for say n = 14 is</p>
+<p><code>crb40.6[[14]]</code></p>
+<p>Actually the resulting joint distribution is not quite a matrix, it is a two-dimensional mpfr array (<a href="http://doi.acm.org/10.1145/1236463.1236468">Fousse et, al, 2007</a>, <a href="https://cran.r-project.org/package=Rmpfr">Mächler 2018</a>).
+ Two-dimensional mpfr arrays are almost the same as matrices, but with 
+appreciably higher precision. Since the computation procedure is 
+iterative, high precision during calculation is vital, but the resulting
+ joint distributions may subsequently be transformed into ordinary 
+matrices by the <a href="https://cran.r-project.org/package=Rmpfr">Rmpfr</a> function <code>asNumeric</code>
+ for easier presentation. To limit the package size, only the joint 
+distributions for n = 14, 60, 100 and success probabilities 0.5 (the 
+symmetric case) and 0.6 have been included in this package, as ordinary 
+matrices.</p>
+</div>
+<div id="the-times-representation-of-the-joint-distributions" class="section level2">
+<h2>The “times” representation of the joint distributions</h2>
+<p>As mentioned, the joint distributions are actually not computed as 
+probabilities, but as probabilities times a multiplier whose default 
+value is <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-6-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-51" style="width: 2.324em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.905em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.16em, 1001.91em, 2.381em, -1000em); top: -2.202em; left: 0em;"><span class="mrow" id="MathJax-Span-52"><span class="msubsup" id="MathJax-Span-53"><span style="display: inline-block; position: relative; width: 1.903em; height: 0px;"><span style="position: absolute; clip: rect(3.144em, 1000.45em, 4.167em, -1000em); top: -3.988em; left: 0em;"><span class="mn" id="MathJax-Span-54" style="font-family: MathJax_Main;">2</span><span style="display: inline-block; width: 0px; height: 3.988em;"></span></span><span style="position: absolute; top: -4.381em; left: 0.5em;"><span class="texatom" id="MathJax-Span-55"><span class="mrow" id="MathJax-Span-56"><span class="mi" id="MathJax-Span-57" style="font-size: 70.7%; font-family: MathJax_Math; font-style: italic;">n</span><span class="mo" id="MathJax-Span-58" style="font-size: 70.7%; font-family: MathJax_Main;">−</span><span class="mn" id="MathJax-Span-59" style="font-size: 70.7%; font-family: MathJax_Main;">1</span></span></span><span style="display: inline-block; width: 0px; height: 3.988em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.202em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.071em; border-left: 0px solid; width: 0px; height: 1.18em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mrow class="MJX-TeXAtom-ORD"><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></math></span></span><script type="math/tex" id="MathJax-Element-6">2^{n-1}</script></span>. Optionally another multiplier <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-7-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msup&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-60" style="width: 2.741em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.262em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.19em, 1002.26em, 2.392em, -1000em); top: -2.202em; left: 0em;"><span class="mrow" id="MathJax-Span-61"><span class="msubsup" id="MathJax-Span-62"><span style="display: inline-block; position: relative; width: 2.281em; height: 0px;"><span style="position: absolute; clip: rect(3.368em, 1000.86em, 4.178em, -1000em); top: -3.988em; left: 0em;"><span class="mi" id="MathJax-Span-63" style="font-family: MathJax_Math; font-style: italic;">m</span><span style="display: inline-block; width: 0px; height: 3.988em;"></span></span><span style="position: absolute; top: -4.351em; left: 0.878em;"><span class="texatom" id="MathJax-Span-64"><span class="mrow" id="MathJax-Span-65"><span class="mi" id="MathJax-Span-66" style="font-size: 70.7%; font-family: MathJax_Math; font-style: italic;">n</span><span class="mo" id="MathJax-Span-67" style="font-size: 70.7%; font-family: MathJax_Main;">−</span><span class="mn" id="MathJax-Span-68" style="font-size: 70.7%; font-family: MathJax_Main;">1</span></span></span><span style="display: inline-block; width: 0px; height: 3.988em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.202em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.085em; border-left: 0px solid; width: 0px; height: 1.157em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>m</mi><mrow class="MJX-TeXAtom-ORD"><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></math></span></span><script type="math/tex" id="MathJax-Element-7">m^{n-1}</script></span> could be used where <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-8-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-69" style="width: 1.074em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.893em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.701em, 1000.87em, 2.511em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-70"><span class="mi" id="MathJax-Span-71" style="font-family: MathJax_Math; font-style: italic;">m</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.085em; border-left: 0px solid; width: 0px; height: 0.686em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math></span></span><script type="math/tex" id="MathJax-Element-8">m</script></span> is an argument (<code>mult</code>) to the function <code>crossrunbin</code>, but the default value should normally be used. This representation is shown in Table 1 for n = 14 and p = 0.5.</p>
+<p>One may note that in Table 1 all probabilities are represented by 
+integers in the “times” representation. This is a general phenomenon in 
+the symmetric case, but not for success probabilities different from 
+0.5. In the symmetric case (<a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0113825">Anhøj and Vingaard Olesen (2014)</a>)
+ the number, C, of crossings has a binomial distribution with number of 
+observations n - 1 and probability 0.5, and their marginal probabilities
+ are just the binomial coefficients divided by <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-9-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mrow class=&quot;MJX-TeXAtom-ORD&quot;&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-72" style="width: 2.324em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.905em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.16em, 1001.91em, 2.381em, -1000em); top: -2.202em; left: 0em;"><span class="mrow" id="MathJax-Span-73"><span class="msubsup" id="MathJax-Span-74"><span style="display: inline-block; position: relative; width: 1.903em; height: 0px;"><span style="position: absolute; clip: rect(3.144em, 1000.45em, 4.167em, -1000em); top: -3.988em; left: 0em;"><span class="mn" id="MathJax-Span-75" style="font-family: MathJax_Main;">2</span><span style="display: inline-block; width: 0px; height: 3.988em;"></span></span><span style="position: absolute; top: -4.381em; left: 0.5em;"><span class="texatom" id="MathJax-Span-76"><span class="mrow" id="MathJax-Span-77"><span class="mi" id="MathJax-Span-78" style="font-size: 70.7%; font-family: MathJax_Math; font-style: italic;">n</span><span class="mo" id="MathJax-Span-79" style="font-size: 70.7%; font-family: MathJax_Main;">−</span><span class="mn" id="MathJax-Span-80" style="font-size: 70.7%; font-family: MathJax_Main;">1</span></span></span><span style="display: inline-block; width: 0px; height: 3.988em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.202em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.071em; border-left: 0px solid; width: 0px; height: 1.18em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mrow class="MJX-TeXAtom-ORD"><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup></math></span></span><script type="math/tex" id="MathJax-Element-9">2^{n-1}</script></span>.
+ Indeed, the row sums in the times representation are the binomial 
+coefficients in the symmetric case. This will be explicated later in the
+ case of n = 14.</p>
+<p>When the success probability is not 0.5, the joint distribution is no
+ longer represented by integers even in the times representation. This 
+is illustrated below for n = 14 and success probability 0.6.</p>
+<table>
+<caption>Table 2</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">L = 1</th>
+<th align="right">2</th>
+<th align="right">3</th>
+<th align="right">4</th>
+<th align="right">5</th>
+<th align="right">6</th>
+<th align="right">7</th>
+<th align="right">8</th>
+<th align="right">9</th>
+<th align="right">10</th>
+<th align="right">11</th>
+<th align="right">12</th>
+<th align="right">13</th>
+<th align="right">14</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C = 0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">6.4</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.8</td>
+<td align="right">1.6</td>
+<td align="right">2.0</td>
+<td align="right">2.8</td>
+<td align="right">4.0</td>
+<td align="right">5.8</td>
+<td align="right">8.6</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">3.4</td>
+<td align="right">15.7</td>
+<td align="right">29.3</td>
+<td align="right">27.2</td>
+<td align="right">25.2</td>
+<td align="right">22.5</td>
+<td align="right">18.4</td>
+<td align="right">11.5</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">7.9</td>
+<td align="right">53.0</td>
+<td align="right">85.7</td>
+<td align="right">76.5</td>
+<td align="right">60.2</td>
+<td align="right">44.0</td>
+<td align="right">27.4</td>
+<td align="right">11.6</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">4.5</td>
+<td align="right">131.1</td>
+<td align="right">263.2</td>
+<td align="right">227.9</td>
+<td align="right">148.0</td>
+<td align="right">86.6</td>
+<td align="right">41.5</td>
+<td align="right">12.7</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">73.4</td>
+<td align="right">413.2</td>
+<td align="right">414.6</td>
+<td align="right">243.7</td>
+<td align="right">121.7</td>
+<td align="right">48.5</td>
+<td align="right">11.9</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td align="right">0.0</td>
+<td align="right">0.8</td>
+<td align="right">354.5</td>
+<td align="right">727.9</td>
+<td align="right">430.8</td>
+<td align="right">182.5</td>
+<td align="right">60.7</td>
+<td align="right">12.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td align="right">0.0</td>
+<td align="right">21.8</td>
+<td align="right">637.1</td>
+<td align="right">591.8</td>
+<td align="right">228.5</td>
+<td align="right">65.5</td>
+<td align="right">11.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td align="right">0.0</td>
+<td align="right">104.6</td>
+<td align="right">666.1</td>
+<td align="right">308.9</td>
+<td align="right">76.3</td>
+<td align="right">10.9</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td align="right">0.0</td>
+<td align="right">166.7</td>
+<td align="right">337.7</td>
+<td align="right">81.2</td>
+<td align="right">10.1</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td>10</td>
+<td align="right">0.0</td>
+<td align="right">134.5</td>
+<td align="right">93.6</td>
+<td align="right">10.1</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td>11</td>
+<td align="right">0.0</td>
+<td align="right">51.5</td>
+<td align="right">9.8</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td>12</td>
+<td align="right">0.0</td>
+<td align="right">10.2</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td>13</td>
+<td align="right">0.8</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+</tr>
+</tbody>
+</table>
+<p>In Table 2 the results are shown with one decimal. The cells 
+different from 0 are the same as in the symmetric case, but the 
+distribution centre has been shifted in the direction of longer runs and
+ fewer crossings.</p>
+<p>The times representation may be advantageous for presentation because
+ very small numbers are avoided. However, the main reason for using this
+ representation is to enhance precision in the iterative computation 
+procedure.</p>
+</div>
+<div id="the-symmetric-case-crossrunsymm" class="section level2">
+<h2>The symmetric case: <code>crossrunsymm</code></h2>
+<p>In the symmetric case the joint probabilities are, as illustrated in 
+Table 1, stored as integers in the times representation. A separate 
+function <code>crossrunsymm</code> is available in this case. The arguments, except the success probability, are the same as in the more general function <code>crossrunbin</code>, but the inner workings are somewhat simpler.</p>
+</div>
+<div id="generalisation" class="section level2">
+<h2>Generalisation</h2>
+<p>In the case of variable success probability, a similar procedure is available and implemented in the function <code>crossrunchange</code>. In this procedure all arguments are as in <code>crossrunbin</code>,
+ except that the success probability is replaced by a vector of length n
+ with success probabilities for each of the n time points.</p>
+</div>
+<div id="when-the-median-is-determined-by-the-data-itself" class="section level2">
+<h2>When the median is determined by the data itself</h2>
+<p>In this case the procedure in <code>crossrunbin</code> does not apply. A separate function <code>crossrunem</code>
+ (em: empirical median) has been constructed for this case. The 
+procedure only applies to the symmetric case, based on n independent and
+ identically observations of a continuous variable. The useful 
+observations, defined as the observations different from the empirical 
+median (<a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0113825">Anhøj and Vingaard Olesen (2014)</a>),
+ are always an even number, therefore the joint distributions of C and L
+ are only needed for even n, say n=2m. Then, half the observations are 
+by definition above the median and the others are below, and all <code>choose(2m,m)</code>
+ placements of the observations above the median are, by symmetry, 
+equally probable. To compute the joint probabilities of C and L in this 
+case then amounts to determine the number of subsets of size m=n/2 for 
+each combination of C and L. In analogy with the times representation 
+these numbers may be stored, and the joint probabilities are then 
+computed by dividing by <code>choose(2m,m)</code>. Actually, for 
+technical reasons, only the number of subsets containing the first 
+observation is computed, and the probabilities are therefore computed by
+ dividing by <code>choose(2m,m)/2</code>.</p>
+<p>A complete enumeration of all subsets of size m=n/2 is, however, not 
+practicable except for rather small sequences, the algorithic complexity
+ is prohibitive well below n=30. Therefore, an iterative procedure 
+resembling the corresponing procedure in <code>crossrunbin</code> has 
+been developed and used for n up to about 60. For this procedure to work
+ it has been necessary to include the number of subsets of any size m, <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-10-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;mo&gt;&amp;#x2264;&lt;/mo&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;mo&gt;&amp;#x2264;&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-81" style="width: 5.598em; display: inline-block;"><span style="display: inline-block; position: relative; width: 4.643em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.477em, 1004.62em, 2.638em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-82"><span class="mn" id="MathJax-Span-83" style="font-family: MathJax_Main;">0</span><span class="mo" id="MathJax-Span-84" style="font-family: MathJax_Main; padding-left: 0.278em;">≤</span><span class="mi" id="MathJax-Span-85" style="font-family: MathJax_Math; font-style: italic; padding-left: 0.278em;">m</span><span class="mo" id="MathJax-Span-86" style="font-family: MathJax_Main; padding-left: 0.278em;">≤</span><span class="mi" id="MathJax-Span-87" style="font-family: MathJax_Math; font-style: italic; padding-left: 0.278em;">n</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.237em; border-left: 0px solid; width: 0px; height: 1.108em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>0</mn><mo>≤</mo><mi>m</mi><mo>≤</mo><mi>n</mi></math></span></span><script type="math/tex" id="MathJax-Element-10">0 \leq m \leq n</script></span>,
+ and also perform the computations for odd n. Thus, only a tiny part of 
+the result of the computations is actually used. Still, the procedure 
+has appreciably lower algorithmic complexity in terms of storage and 
+computer time than explicit enumeration.</p>
+<p>The function <code>crossrunem</code> has arguments <code>nmax</code> for maximum sequence length, <code>prec</code> for precision in the <a href="https://cran.r-project.org/package=Rmpfr">Rmpfr</a> computations, normally set to its default value, and <code>printn</code> for including progress information during the computations. The procedure has so far been used up to nmax=60. A function <code>crossrunemcont</code> has been made for extension of an existing <code>crossrunem</code>
+ computation, so that one does not need to start from scratch when 
+attempting to extend the results of the computations to a somewhat 
+higher value of n.</p>
+<p>A function <code>simclem</code> (simulation of C and L with the empirical median) has been made so that the joint distributions from <code>crossrunem</code> may be compared with simulations. In <code>simclem</code>
+ the continuous distribution used is a standard normal, but the number 
+of observations above and below the empirical median does not depend on 
+what continuous distribution is used. Agreement between results from <code>crossrunem</code>
+ and simulations has been investigated and is good, some details are 
+included in the Appendix. Also, the marginal distributions of C and L 
+from <code>crossrunem</code> have been compared with the corresponding distributions from <code>crossrunsymm</code>.
+ There are indications that the agreement is better for higher n. Some 
+details have been included in the Appendix. The results from <code>crossrunem</code> for n=14 and 60 have been included in the package as ordinary matrices <code>joint14em</code> and <code>joint60em</code>,
+ using a times representations in which the corresponding probabilities 
+are obtained by dividing by choose(14,7)/2=1716 and 
+choose(60,30)/2,respectively.</p>
+<p>For n=14 the joint distribution is shown below:</p>
+<table>
+<caption>Table 3</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">l=1</th>
+<th align="right">l=2</th>
+<th align="right">l=3</th>
+<th align="right">l=4</th>
+<th align="right">l=5</th>
+<th align="right">l=6</th>
+<th align="right">l=7</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>c=1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td>c=2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td>c=3</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">12</td>
+<td align="right">20</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>c=4</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">24</td>
+<td align="right">36</td>
+<td align="right">30</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>c=5</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">36</td>
+<td align="right">108</td>
+<td align="right">81</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>c=6</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">96</td>
+<td align="right">144</td>
+<td align="right">60</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>c=7</td>
+<td align="right">0</td>
+<td align="right">16</td>
+<td align="right">240</td>
+<td align="right">144</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>c=8</td>
+<td align="right">0</td>
+<td align="right">40</td>
+<td align="right">200</td>
+<td align="right">60</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>c=9</td>
+<td align="right">0</td>
+<td align="right">100</td>
+<td align="right">125</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>c=10</td>
+<td align="right">0</td>
+<td align="right">60</td>
+<td align="right">30</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>c=11</td>
+<td align="right">0</td>
+<td align="right">36</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>c=12</td>
+<td align="right">0</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>c=13</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>Comparing with Table 1 above, C=0 is not included since there has to 
+be at least one crossing of the empirical median. Also, with exactly 7 
+observations above and 7 below the median, the longest run cannot be 
+higher than 7. Generally, C=0 does not occur, and the highest possible 
+value of the longest run is is m=n/2.</p>
+</div>
+<div id="limitations" class="section level2">
+<h2>Limitations</h2>
+<p>The computations in the case when the empirical median is used have 
+too high algorithmic complexity for n much higher than 60. Also, the 
+procedure <code>crossrunem</code> only applies for a continuous 
+distribution, while the observations may be e. g. counts in practice. 
+Also, the procedures in the package <code>crossrun</code> cannot be generalized to autocorrelated time sequences.</p>
+</div>
+<div id="conclusions" class="section level2">
+<h2>Conclusions</h2>
+<p>The <code>crossrun</code> package is, to our knowledge the first 
+software package that allows for the computation of joint probabilities 
+of number of crossings and longest run in time series data. This is an 
+important step forward, as previous work on the subject has only dealt 
+with these parameters as independent entities. This work may form the 
+basis of better tests for non-random variation in time series data than 
+are currently available.</p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ol style="list-style-type: decimal">
+<li><p>Jacob Anhøj (2015). <a href="http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0121349">Diagnostic value of run chart analysis: Using likelihood ratios to compare run chart rules on simulated data series</a> PLOS ONE 10 (3): e0121349.</p></li>
+<li><p>Jacob Anhøj, Anne Vingaard Olesen (2014). <a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0113825">Run Charts Revisited: A Simulation Study of Run Chart Rules for Detection of Non-Random Variation in Health Care Processes</a>. PLoS ONE 9(11): e113825.</p></li>
+<li><p>Laurent Fousse, Guillaume Hanrot, Vincent Lefèvre, Patrick Pélissier, Paul Zimmermann. (2007). <a href="http://doi.acm.org/10.1145/1236463.1236468">Mpfr: A multiple-precision binary floating-point library with correct rounding</a> ACM Trans. Math. Softw. 33 (2): 13. ISSN 0098-3500.</p></li>
+<li><p>Martin Mächler (2018). <a href="https://cran.r-project.org/package=Rmpfr">Rmpfr: R MPFR - Multiple Precision Floating-Point Reliable</a> R package version 0.7-0.</p></li>
+</ol>
+</div>
+<div id="appendix-checking-procedures" class="section level2">
+<h2>Appendix: Checking procedures</h2>
+<p>Procedures for checking the joint distributions are available in <code>crossrun</code>. First, the function <code>exactbin</code> computes the joint distribution for <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-11-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo&gt;&amp;#x2264;&lt;/mo&gt;&lt;mn&gt;6&lt;/mn&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-88" style="width: 2.979em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.44em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.477em, 1002.4em, 2.638em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-89"><span class="mi" id="MathJax-Span-90" style="font-family: MathJax_Math; font-style: italic;">n</span><span class="mo" id="MathJax-Span-91" style="font-family: MathJax_Main; padding-left: 0.278em;">≤</span><span class="mn" id="MathJax-Span-92" style="font-family: MathJax_Main; padding-left: 0.278em;">6</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.237em; border-left: 0px solid; width: 0px; height: 1.108em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi><mo>≤</mo><mn>6</mn></math></span></span><script type="math/tex" id="MathJax-Element-11">n \leq 6</script></span>
+ independently of the iterative procedure, by formulas based on “brute 
+force” enumeration that is practically feasible for these short 
+sequences. An example of use of <code>exactbin</code> for checking of results of the exact procedure is as follows, for n=5 and success probability 0.6 (multiplied by <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-12-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;msup&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mn&gt;4&lt;/mn&gt;&lt;/msup&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;16&lt;/mn&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-93" style="width: 3.932em; display: inline-block;"><span style="display: inline-block; position: relative; width: 3.274em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.212em, 1003.23em, 2.462em, -1000em); top: -2.262em; left: 0em;"><span class="mrow" id="MathJax-Span-94"><span class="msubsup" id="MathJax-Span-95"><span style="display: inline-block; position: relative; width: 0.929em; height: 0px;"><span style="position: absolute; clip: rect(3.144em, 1000.45em, 4.167em, -1000em); top: -3.988em; left: 0em;"><span class="mn" id="MathJax-Span-96" style="font-family: MathJax_Main;">2</span><span style="display: inline-block; width: 0px; height: 3.988em;"></span></span><span style="position: absolute; top: -4.381em; left: 0.5em;"><span class="mn" id="MathJax-Span-97" style="font-size: 70.7%; font-family: MathJax_Main;">4</span><span style="display: inline-block; width: 0px; height: 3.988em;"></span></span></span></span><span class="mo" id="MathJax-Span-98" style="font-family: MathJax_Main; padding-left: 0.278em;">=</span><span class="mn" id="MathJax-Span-99" style="font-family: MathJax_Main; padding-left: 0.278em;">16</span></span><span style="display: inline-block; width: 0px; height: 2.262em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.098em; border-left: 0px solid; width: 0px; height: 1.215em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mn>2</mn><mn>4</mn></msup><mo>=</mo><mn>16</mn></math></span></span><script type="math/tex" id="MathJax-Element-12">2^4=16</script></span> to conform with the times representation):</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(crossrun2)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(Rmpfr)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">exact1   &lt;-<span class="st"> </span><span class="kw">asNumeric</span>((<span class="dv">2</span><span class="op">^</span><span class="dv">4</span>) <span class="op">*</span><span class="st"> </span><span class="kw">exactbin</span>(<span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">p =</span> <span class="fl">0.6</span>))</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">iter1    &lt;-<span class="st"> </span><span class="kw">asNumeric</span>(<span class="kw">crossrunbin</span>(<span class="dt">nmax =</span> <span class="dv">5</span>, <span class="dt">prob =</span> <span class="fl">0.6</span>)<span class="op">$</span>pt[[<span class="dv">5</span>]])</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">compare1 &lt;-<span class="st"> </span><span class="kw">cbind</span>(exact1,iter1)</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">compare1</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt;        1      2      3      4     5      1      2      3      4     5</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt; 0 0.0000 0.0000 0.0000 0.0000 1.408 0.0000 0.0000 0.0000 0.0000 1.408</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt; 1 0.0000 0.0000 1.8432 2.1504 0.000 0.0000 0.0000 1.8432 2.1504 0.000</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#&gt; 2 0.0000 2.9184 3.0720 0.0000 0.000 0.0000 2.9184 3.0720 0.0000 0.000</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#&gt; 3 0.0000 3.6864 0.0000 0.0000 0.000 0.0000 3.6864 0.0000 0.0000 0.000</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#&gt; 4 0.9216 0.0000 0.0000 0.0000 0.000 0.9216 0.0000 0.0000 0.0000 0.000</span></a></code></pre></div>
+<p>Here the 5 leftmost columns come from exact calculations while the 5 
+rightmost columns come from the iterative procedure. The maximum 
+absolute difference is computed as 0 in this case. Generally some tiny 
+differences may occur.</p>
+<p>The iterative computations may also be checked for appreciably higher
+ n. As commented above the row sums in the symmetric case are just the 
+binomial coefficients. The following code checks this fact for n=14.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(crossrun2)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">library</span>(Rmpfr)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">bincoeff14           &lt;-<span class="st"> </span>Rmpfr<span class="op">::</span><span class="kw">chooseMpfr.all</span>(<span class="dv">14</span>) <span class="co"># binomial coefficients, n - 1 = 14</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">bincoeff14iter       &lt;-<span class="st"> </span><span class="kw">cumsumm</span>(joint14symm)[<span class="op">-</span><span class="dv">1</span>, <span class="dv">14</span>]     <span class="co"># row sums, n - 1 = 14</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">compare14            &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">asNumeric</span>(bincoeff14), bincoeff14iter)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt; Warning in base::rbind(..., deparse.level = deparse.level): number of</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; columns of result is not a multiple of vector length (arg 2)</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="kw">row.names</span>(compare14) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"exact"</span>,<span class="st">"iter"</span>)</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">compare14</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; exact   14   91  364 1001 2002 3003 3432 3003 2002  1001   364    91    14</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; iter    13   78  286  715 1287 1716 1716 1287  715   286    78    13     1</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt;       [,14]</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; exact     1</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt; iter     13</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="kw">max</span>(<span class="kw">abs</span>(bincoeff14 <span class="op">-</span><span class="st"> </span>bincoeff14iter))</a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt; Warning in initialize(value, ...): longer object length is not a multiple</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt; of shorter object length</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt; 1 'mpfr' number of precision  53   bits </span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#&gt; [1] 1716</span></a></code></pre></div>
+<p>This check has been repeated for <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-13-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo&gt;&amp;#x2264;&lt;/mo&gt;&lt;mn&gt;100&lt;/mn&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-100" style="width: 4.17em; display: inline-block;"><span style="display: inline-block; position: relative; width: 3.452em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.477em, 1003.41em, 2.638em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-101"><span class="mi" id="MathJax-Span-102" style="font-family: MathJax_Math; font-style: italic;">n</span><span class="mo" id="MathJax-Span-103" style="font-family: MathJax_Main; padding-left: 0.278em;">≤</span><span class="mn" id="MathJax-Span-104" style="font-family: MathJax_Main; padding-left: 0.278em;">100</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.237em; border-left: 0px solid; width: 0px; height: 1.108em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi><mo>≤</mo><mn>100</mn></math></span></span><script type="math/tex" id="MathJax-Element-13">n \leq 100</script></span> with full mpfr precision without finding any discrepancies.</p>
+<p>The results of the iterative procedure may also be checked by results of simulations. The <code>crossrun</code> function <code>simclbin</code>
+ performs simulations for the number of crossings and the longest run 
+for chosen values of the success probability. Again, computations for 
+substantially longer sequences (n appreciably higher than 14) should use
+ full mpfr precision for the joint distribution. The following code 
+shows the procedure for n = 14 and 10000 simulations and compares the 
+mean of <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-14-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;C&lt;/mi&gt;&lt;mo&gt;&amp;#x22C5;&lt;/mo&gt;&lt;mi&gt;L&lt;/mi&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-105" style="width: 2.622em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.143em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.438em, 1002.11em, 2.522em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-106"><span class="mi" id="MathJax-Span-107" style="font-family: MathJax_Math; font-style: italic;">C<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.045em;"></span></span><span class="mo" id="MathJax-Span-108" style="font-family: MathJax_Main; padding-left: 0.222em;">⋅</span><span class="mi" id="MathJax-Span-109" style="font-family: MathJax_Math; font-style: italic; padding-left: 0.222em;">L</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.098em; border-left: 0px solid; width: 0px; height: 1.015em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>C</mi><mo>⋅</mo><mi>L</mi></math></span></span><script type="math/tex" id="MathJax-Element-14">C \cdot L</script></span> in the simulations with the corresponding mean from the joint distribution with success probability 0.6:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">library</span>(crossrun2)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">83938487</span>)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">sim14 &lt;-<span class="st"> </span><span class="kw">simclbin</span>(<span class="dt">nser =</span> <span class="dv">14</span>, <span class="dt">nsim =</span> <span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">(<span class="kw">matrix</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">13</span>, <span class="dt">nrow =</span> <span class="dv">1</span>) <span class="op">%*%</span><span class="st"> </span>joint14<span class="fl">.6</span> <span class="op">%*%</span><span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">14</span>, <span class="dt">ncol =</span> <span class="dv">1</span>)) <span class="op">/</span><span class="st"> </span><span class="dv">2</span><span class="op">^</span><span class="dv">13</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt;          [,1]</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt; [1,] 25.47043</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="kw">mean</span>(sim14<span class="op">$</span>nc0<span class="fl">.6</span> <span class="op">*</span><span class="st"> </span>sim14<span class="op">$</span>lr0<span class="fl">.6</span>)</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt; [1] 25.4656</span></a></code></pre></div>
+<p>Here, <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-15-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;C&lt;/mi&gt;&lt;mo&gt;&amp;#x22C5;&lt;/mo&gt;&lt;mi&gt;L&lt;/mi&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-110" style="width: 2.622em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.143em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.438em, 1002.11em, 2.522em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-111"><span class="mi" id="MathJax-Span-112" style="font-family: MathJax_Math; font-style: italic;">C<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.045em;"></span></span><span class="mo" id="MathJax-Span-113" style="font-family: MathJax_Main; padding-left: 0.222em;">⋅</span><span class="mi" id="MathJax-Span-114" style="font-family: MathJax_Math; font-style: italic; padding-left: 0.222em;">L</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.098em; border-left: 0px solid; width: 0px; height: 1.015em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>C</mi><mo>⋅</mo><mi>L</mi></math></span></span><script type="math/tex" id="MathJax-Element-15">C \cdot L</script></span>
+ is just used as an example of a fairly demanding function of the number
+ C of crossing and the longest run L. Again, computations for 
+substantially longer sequences (n appreciably higher than 14) should use
+ full mpfr precision for the joint distribution. Simpler statistics 
+include means and standard deviations of C and L separately. The 
+following shows a graphical comparison of the cumulative distribution 
+functions of C and L based on the joint distribution and the 
+simulations.</p>
+<p><img src="data:image/png;base64,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"><!-- --><img src="data:image/png;base64,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"><!-- --></p>
+<p>In the case of the empirical median the results may also be checked 
+by simulations. For n=14 we get the following comparison between the 
+joint distribution and simulation results, for the mean number of 
+crossings, mean longest run and the mean of <span class="math inline"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-16-Frame" tabindex="0" style="position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;C&lt;/mi&gt;&lt;mo&gt;&amp;#x22C5;&lt;/mo&gt;&lt;mi&gt;L&lt;/mi&gt;&lt;/math&gt;" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-115" style="width: 2.622em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.143em; height: 0px; font-size: 120%;"><span style="position: absolute; clip: rect(1.438em, 1002.11em, 2.522em, -1000em); top: -2.321em; left: 0em;"><span class="mrow" id="MathJax-Span-116"><span class="mi" id="MathJax-Span-117" style="font-family: MathJax_Math; font-style: italic;">C<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.045em;"></span></span><span class="mo" id="MathJax-Span-118" style="font-family: MathJax_Main; padding-left: 0.222em;">⋅</span><span class="mi" id="MathJax-Span-119" style="font-family: MathJax_Math; font-style: italic; padding-left: 0.222em;">L</span></span><span style="display: inline-block; width: 0px; height: 2.321em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.098em; border-left: 0px solid; width: 0px; height: 1.015em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>C</mi><mo>⋅</mo><mi>L</mi></math></span></span><script type="math/tex" id="MathJax-Element-16">C \cdot L</script></span>, respectively:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">library</span>(crossrun2)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">83938487</span>)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">sim14em &lt;-<span class="st"> </span><span class="kw">simclem</span>(<span class="dt">m1=</span><span class="dv">7</span>, <span class="dt">nsim =</span> <span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw">sum</span>(<span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">13</span>) <span class="op">*</span><span class="kw">cumsumm</span>(joint14em)[,<span class="dv">7</span>])<span class="op">/</span>(<span class="kw">choose</span>(<span class="dv">14</span>,<span class="dv">7</span>)<span class="op">/</span><span class="dv">2</span>) </a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt; [1] 7</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="kw">mean</span>(sim14em<span class="op">$</span>cs)</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt; [1] 7.0192</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="kw">sum</span>(<span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">7</span>) <span class="op">*</span><span class="kw">cumsummcol</span>(joint14em)[<span class="dv">13</span>,])<span class="op">/</span>(<span class="kw">choose</span>(<span class="dv">14</span>,<span class="dv">7</span>)<span class="op">/</span><span class="dv">2</span>) </a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt; [1] 3.454545</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="kw">mean</span>(sim14em<span class="op">$</span>ls)</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt; [1] 3.4471</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">(<span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">13</span>, <span class="dt">nrow =</span> <span class="dv">1</span>) <span class="op">%*%</span><span class="st"> </span>joint14em <span class="op">%*%</span><span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">7</span>, <span class="dt">ncol =</span> <span class="dv">1</span>)) <span class="op">/</span><span class="st"> </span>(<span class="kw">choose</span>(<span class="dv">14</span>,<span class="dv">7</span>)<span class="op">/</span><span class="dv">2</span>) </a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt;          [,1]</span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt; [1,] 22.78089</span></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="kw">mean</span>(sim14em<span class="op">$</span>cs <span class="op">*</span><span class="st"> </span>sim14em<span class="op">$</span>ls)</a>
+<a class="sourceLine" id="cb4-16" data-line-number="16"><span class="co">#&gt; [1] 22.8185</span></a></code></pre></div>
+<p>Comparison with simulation results in the cumulative distribution functions of C and L are as follows:</p>
+<p><img src="data:image/png;base64,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"><!-- --><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAq4AAAFQCAMAAABJUQzAAAAAflBMVEUAAAAAADoAAGYAOpAAZrY6AAA6ADo6AGY6Ojo6kNtmAABmADpmtrZmtv+QOgCQZgCQkGaQ2/+2ZgC2tma2/7a2///bkDrb////AAD/ADr/AGb/OgD/OpD/ZgD/Zrb/kDr/kGb/kNv/tmb/trb/tv//25D/2////7b//9v///+INjj8AAAACXBIWXMAAA7DAAAOwwHHb6hkAAANOklEQVR4nO3dgXabRhqGYZJstpW2ThttV5XdummpFaz7v8FlGJCEAo5g5of54H3OiRs7ClD7zWiE0Cg7ATKyuQ8AuB+5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5Qgi5QkjkXDNghLlyjbs5rINBrscf/tf8Ns+yd58DNwecxc+12L5vcs3LVvPuXskVI0TPtRxQm1xfP23Kj7t/Be0XuIida55t8ibX48eH8uP+PNiO2i9wYTB3veT678/Xn1ZbGfwQD0uSHQ7Zvb86//7dO7r7kM59+mlr9+SVXLVl92f3vQQH7Tb6Dcl1WXrSm+lgot/wzcnAiM1hKt0j5txH1WKaKw+1EpXUiDmEZa6cyEpIuiPmEJa58jRBElRGzntY5fr6yQ2qe56EnVWUR+Mp4RKXZRK/0+9Drvnj19svFYeX7tu2/iB/6b/hnKo7/7kPwgi5duTa6zrPFFNd3J3/LXJdRq4LvfO/ta5ci8e/Dk+n05fD4fC3+7z8zeNfj19ff//T//mx/IODv48/Hv5xtzqev+A+VP99rr7k/uAPn2zuN1dUf+PlvJWpLPnO/9bKcj38UX78Uo6nRxfY85Nr7TK6Hl1kua/y6L7+pYr7qZXr859+C0WTcV795s/yl/sbj1+brdj/78R5Hl7J2nL9u/5wyp98nafnS67l1+qbvfie6w8vV7kW7ubHOlX36/X3anOPX4v6xs1WTC3oXOoQSeV6sNLswI+GVZ/nrq7mrsXh6Xyzo79bf7nNtforh6tcffStG5n2mq3pzv9WUrmaq++8vZcvt7mWI+XV3LUn13K++3T8JtficqNmK/Gt4+HUW9aYa9PnN6Nr5dndrffnev567+jabCXqka/0zv/WCnM9n4HyoX25CatoHmq1cj3PYavG8+6569XG453mWvWd/60V5uoDffYP41tnBqqBNu8YXV9//8PdxTeja+FOXBXVr9aZAZ9rs5Xww+XO/9Yac63Ouz7Vv2mdd3XT2vocVStXF+jhn/Pc9fGri/35m/Ou9ehabyXEkq6iimlduUpY27nUIcg1MaT6FnJNChOAt5FrQhhZv8di0aHLCwj2WZY9hO13PRhZvy/6okPXL8/au0+6eyXXG4ys94ica+vFr/71WrwS9g6MrPeJnGtraQFyvRMj671i59pauIXJwD0YWe8XOdebZbG+WT2bFQhvMbIOYZrrrhxljx83QftdNJ5oHchyMsAaWW/j8pXBLB9qsWDmW5gPjWB5Isu3y4KZXRhZRzF9moC5aw9G1pGiPwlbr+JWn3PNsmwTtt8FYmQdjUtcpsbIGoBcp8XIGoRcp8TIGohcp8PIGoxcp8LIGgG5ToIXYMdBrhPgMpZYyNUcl7HEQ67GGFljIldTjKxxkashRtbYyNUMI2t85GqEkdUCuZpgZLVBrgYYWa2Qa2y8XNAQucbFk62myDUmLmMxZrsC4fFjlnWuObTIXBlZzZm+tDD/8Nup2K5kjSxG1gnYrkDoPlnHshiMrJMYmGux7V5duNFaFsMv6RK4XwmMrBMZk6sfNTu1Fh3K3/+6vXnh9iKXdGNknUzkXFvrDO2zMlu/4MD4/SZvUf/yUmea67vrxV5H7jdxjKyTspwM+Cmsn86O3m/SGFknFjvX1gqEPtfOB1xL+Dkzsk4ucq6tE1n+NMJSJwNcxzKDwbleHtt3Zth+o6IPv/W1Lf+zZmSdg+0KhPliVyBUP35RXOIyBhOBmQzP1c8Hyrv5afabIiYCcxmc686/T9a+504++n7Tw9mr+QzN9fwwqvt0avz9JoehdUYDc716SrX7zTOj7zc11DqnwSeyNs0Xui8MjL7ftDARmNf4Cwi7T/9H329SGFpnRq734yWusyPXuwke8uKQ670YWhMQ+5qB6PtNBBOBJPAk7F3EDnexyPUODK2pGJyrf6Kg542JDfabAGpNxtBci62/uKX5r/l+5yd0qIs3NNddU+nV81um+50bQ2tKBl8zsGm+sA8aXlVypdakRD/v2lrS7XQ1HI/c76y4RCAxsS9xab1Wy33ecyG3RAe81DU1g+eulwsIuzpsvRL2VD2toJurwjGuzNBcz1dld1+e3VpnwP3uw8+quTIRSNDg8665f9VLz4tfWqu4VJ+qzl2ZCKRo+LNar5/cBQM9LyVorZFVTQ3auaqsQJj68a1V5Cdh27m6c12So2vaR7dikXNtTQaqTxRzZSKQqti5Xj/U2tf3+2IrEDIRSJflexNU5EZXRtaExb6A8PZpArVcedI1abZLup3Uck30sFDj8uwrDK2pI9cLak0euZ4leEi4Qa41hlYF5OpRqwRydXhmQAS5nhhadZArtQohVyYCQlafK0OrkpXnmlGrlHXnmsZR4G6rzpWhVc2Kc2UioGe9uc5/BBhsrbkytEpaaa4Zr3GRtM5c5x7bMVL0XK9XIKxW0NiE7ddAxguzVVm+tPD1U/mbffeCLzPmytCqy/KF27fru43ab2xcIqDMclkMr/Uy7uH7jYyJgDTLRYe83fUncy/pxtCqzXRJt+or3Y+1ZumGc63qrHPNe5bWnCNXapVnPBnoGVvnyJXHWAtg+1CrZ43tIfuNhaF1CUxXINx3rpU5bL+RUOsiWD5N8NYbx06bKxOBhbBcgbBejnj2865cfbUYS7/EpTrFS61LseRcfaq0uiBLzZVUF2mJuZLqYi0tV1JdtEXlSqpLt5hc3bBKqku3iFxJdS3kcyXVNZHOlVTXRjZXUl0jzVxJdaX0ciXVFdPKlVRXTidXUoVIrqSKikCupIqG6ZJu7U/GbI5Ucc3ytVrtTwZvjlRxy/KVsO2XxQ7aHKmii+U6AyNXICRV9LFcxaVjfbfvbY5U8RbLNbK+Xd/tOysQkireNnGuw/cLXCQ2GQDekuBDLaBPoieygC4JP00A3LJc0u38SdfmgBFi5xrCbK0Mqc1yuBE2S65TbZbDjbBZcp1qsxxuhM2S61Sb5XAjbJZcp9oshxths+Q61WY53AibJdepNsvhRtgsuU61WQ43wmbJdarNcrgRNsuzphBCrhBCrhBCrhBCrhBCrhBCrhBCrhBCrhBCrhBCrhBCrhBCrhAyQa7HH7rWewn0+inLsk387fa/Jj3Y7sNvsTdZbN2rnjsXKAlz/Giw2bx+lfbD+E3Y51psO5cnCvP6qYxqH/876pZS6lnxI1Sexc/VL1cWX14earE1+GdwCtysea7lPymDXN9apytAsd00S3/EVg6E8XPtXlcvmF9WKvp3txK2Vetc82xj9D099S3aGcom1/2Hn+PnujcZAM0Gbbfpj5uQvz7B3NUu153Nv3+LfwRlAQZz192PJjP4/P2vW5NHBsE/MuVcc4vvaG7yc3J3r/FzLbZuk7tN5M2WDwrKH5nJnUw12wognGtu8ZD45NIyuNcuN2kwulbif3/9/YvFzy10+qabq8nY6rccfTZQTQatcvUPO2PyD4fibzf8eyCb696sVouff/gZx37xHxj5n5jBA67QuYBsrnuTH70P1ejuIP7oanW4xdbo2xA8EIjmGng+pJdLyp91tNl27E262Xv8h1rVVNvi2xA8zRLNtb53jX/KaWd1l20zd7U63NzoKe7QFLjEBULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULIFULINdiYta9yo3W4lo5cg43I1a9IicHINRi5Todcg11yrZeZLLY/bf06lrsse/eLW9VzXy9A6d4NMHtwH6u/VPznl+z9r67dMuDLX0Mfcg12zjUvW3Nvylds3Vsqlr/cu/LkWf2JW0G5Wj26vFkzulZv3VKcc61viV7kGqzJ1S83nb/7XK3AX5bplzbf1V9wyzI3KzNfct2crnLd2Lx/xYKQa7AmV19a+bHpz8dZ9uvXOK/+xPd6yfXhOtcHZrXfQa7B2rledbc/53p+45fqjcIfyHUscg127+h6vr2bHZDrKOQarGPu6rur3xb8UqfXlHk6l7ppVT7x4Ush12AdZwbq7lpnBtyoWg2zzYOxUx2ne1PPcpJArncg12A7PzHdXJ13bbor/+j9f92UwJ13df/N63dX2tXnXbd+uptlPzEZuAe5WjN7w/E1Ilc71dw1+G1QcYVcDeVmb1u8VuQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIeQKIf8Hg/ooMPSxK5wAAAAASUVORK5CYII="><!-- --></p>
+<p>The joint distributions may be compared between the cases with 
+pre-defined and empirical median. For n=14 the cumulative distribution 
+functions for C and L are as follows:</p>
+<p><img src="data:image/png;base64,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"><!-- --><img src="data:image/png;base64,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Rqok63m6ijQVDeg6GnS9Huh6lNdvfjCP0FjXpS1NNcofbj62j9SoPtks/mGeC2MebPiw23zx46JcaoQsI/xammnWLR9OZItHV7o6m+4OmrJrNZuYdRPODtD1KK9LU4nUPEajrMtrKgjn3WKn9SebRflwP2P27afCvIfyEUSlrsvyaYcPdt3X5X1Z2tq+rnTtbHrYVLlWu4lZN+EhF12PYvSyf5hiurY++6rVpfPJfVVpuljHVpxe3z1bXethdmlLD79+89FWem907Wx62JQdoZtN7kUf56EOdD1KqZTNIAtL2nLqFc0npUL1H9VTByrVltX3fteyPMs6unY2PWyqznDbTVKeK0DXo1hd64eVrA90rT9xdf2ieqaLq2v90JgiKb39z2JA14OmbB7R3QRdYYDO6LrrPqyionl5jq7V6NqsOjy6dptqNt2gK7qewPWjemhVN3ftftImA+XDgurc9cHNXe3DBQeSgcOmzBJ3E3SFAawapaCr6qD8YGbAfLKna/VwYkfXct3t41s7Smb3vboeNlWPru0m6AoDVGqYydDqoWg9867l87EcXf+2aGZWO4ZV867lk4RWzUGUq+tBU3Xu2m6CriBJyjNNnkFXedDVG+gqD7p6A11BEegKikBXUAS6giLQFRSBrqAIdAVFoCsoAl1BEegKikBXUAS6giLQFRSBrqAIdAVFoCsoAl1BEegKikBXUAS6giLQFRTxfy6GW3Hi46TjAAAAAElFTkSuQmCC"><!-- --></p>
+<p>We see that there is a certain discrepancy, with more crossings and 
+the longest run shorter when the median is determined by the data 
+itself. The corresponding comparison for n=60 is as follows:</p>
+<p><img src="data:image/png;base64,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"><!-- --><img src="data:image/png;base64,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"><!-- --></p>
+<p>The discrepancy is in the same direction as for n=14, but 
+considerably smaller. This may imply that the joint distribution for a 
+pre-determined midline could be an acceptable approximation in the case 
+with empirical median, for long sequences for which it is difficult to 
+compute the joint distribution with empirical median. This is, however, a
+ question that needs further investigation.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+
+<div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px none; margin: 0px;"><div id="MathJax_Font_Test" style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; padding: 0px; border: 0px none; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: italic; font-size-adjust: none; font-family: MathJax_Math, sans-serif;"></div></div></body></html>
